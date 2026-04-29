@@ -1,0 +1,203 @@
+{
+  "AnonName": {
+    "prefix": "anon",
+    "body": "$(anon)",
+    "description": "Generates an anonymous id based on name."
+  },
+
+  "NotSubstitution": {
+    "prefix": "not",
+    "body": "$(not ${1:value})$0",
+    "description": "Substitution that returns 'not' of the input boolean value."
+  },
+
+  "AndSubstitution": {
+    "prefix": "and",
+    "body": "$(and ${1:left} ${2:right})$0",
+    "description": "Substitution that returns 'and' of the input boolean values."
+  },
+
+  "OrSubstitution": {
+    "prefix": "or",
+    "body": "$(or ${1:left} ${2:right})$0",
+    "description": "Substitution that returns 'or' of the input boolean values."
+  },
+
+  "AnySubstitution": {
+    "prefix": "any",
+    "body": "$(any ${1:args})$0",
+    "description": [
+      "Substitute to the string 'true' if at least one of the input arguments evaluates to true.",
+      "If none of the arguments evaluate to true, then this substitution Substitution that returns the string 'false'.",
+      "The following string arguments evaluate to true: '1', 'true', 'True', 'on'"
+    ]
+  },
+
+  "AllSubstitution": {
+    "prefix": "all",
+    "body": "$(all ${1:args})$0",
+    "description": [
+      "Substitutes to the string 'true' if all of the input arguments evaluate to true.",
+      "If any of the arguments evaluates to false, then this substitution Substitution that returns the string 'false'.",
+      "The following string arguments evaluate to true: '1', 'true', 'True', 'on'.",
+      "The following string arguments evaluate to false: '0', 'false', 'False', 'off'"
+    ]
+  },
+
+  "Command": {
+    "prefix": "command",
+    "body": "$(command ${1:cmd})$0",
+    "description": [
+      "Substitution that gets the output of a command as a string.",
+      "If the command is not found or fails a `SubstitutionFailure` error is raised.",
+      "Behavior on stderr output is configurable, see constructor.",
+      ":param cmd: command to be executed. The substitutions will be performed, and `shlex.split` will be used on the result."
+    ]
+  },
+
+  "Command with output": {
+    "prefix": "command with output",
+    "body": "$(command ${1:cmd} ${2:output})$0",
+    "description": [
+      "Substitution that gets the output of a command as a string.",
+      "If the command is not found or fails a `SubstitutionFailure` error is raised.",
+      "Behavior on stderr output is configurable, see constructor.",
+      ":param cmd: command to be executed. The substitutions will be performed, and `shlex.split` will be used on the result.",
+      ":param output: specifies what to do when there is stderr output.",
+      "Can be one of:",
+      "- 'fail': raises `SubstitutionFailure` when stderr output is detected.",
+      "- 'ignore': `stderr` output is ignored.",
+      "- 'warn': The `stderr` output is ignored, but a warning is logged if detected.",
+      "- 'capture': The `stderr` output will be captured, together with stdout.",
+      "It can also be a substitution, that results in one of those four options."
+    ]
+  },
+
+  "EnvironmentVariable": {
+    "prefix": "env",
+    "body": "$(env ${1:name})$0",
+    "description": [
+      "Substitution that gets an environment variable value as a string.",
+      "If the environment variable is not found, it returns empty string.",
+      "Note that the environment variable is resolved based on the launch context's environment (i.e., ``context.environment``) even though the substitution may be associated with an entity that might have a different set of environment variables.",
+      ":param name: name of the environment variable.",
+      ":param default: used when the environment variable doesn't exist. If `None`, the substitution is not optional.",
+      ":raises `launch.substitutions.substitution_failure.SubstitutionFailure`: If the environment variable doesn't exist and `default` is `None`."
+    ]
+  },
+
+  "EnvironmentVariable with default": {
+    "prefix": "env with default",
+    "body": "$(env ${1:name} ${2:default})$0",
+    "description": [
+      "Substitution that gets an environment variable value as a string.",
+      "If the environment variable is not found, it returns empty string.",
+      "Note that the environment variable is resolved based on the launch context's environment (i.e., ``context.environment``) even though the substitution may be associated with an entity that might have a different set of environment variables.",
+      ":param name: name of the environment variable.",
+      ":param default: used when the environment variable doesn't exist. If `None`, the substitution is not optional.",
+      ":raises `launch.substitutions.substitution_failure.SubstitutionFailure`: If the environment variable doesn't exist and `default` is `None`."
+    ]
+  },
+
+  "EqualsSubstitution": {
+    "prefix": "equals",
+    "body": "$(equals ${1:left} ${2:right})$0",
+    "description": "Substitution that checks if two inputs are equal. Returns 'true' or 'false' strings depending on the result."
+  },
+
+  "NotEqualsSubstitution": {
+    "prefix": "not equals",
+    "body": "$(not-equals ${1:left} ${2:right})$0",
+    "description": "Substitution that checks if two inputs are not equal. Returns 'true' or 'false' strings depending on the result."
+  },
+
+  "IfElseSubstitution": {
+    "prefix": "if",
+    "body": "$(if ${1:condition} ${2:if_value})$0",
+    "description": [
+      "Substitution that conditionally returns one of two substitutions.",
+      "Depending on whether the condition substitution evaluates to true, either it returns the if_value substitution or the else_value substitution."
+    ]
+  },
+
+  "IfElseSubstitution with else value": {
+    "prefix": "if else",
+    "body": "$(if ${1:condition} ${2:if_value} ${3:else_value})$0",
+    "description": [
+      "Substitution that conditionally returns one of two substitutions.",
+      "Depending on whether the condition substitution evaluates to true, either it returns the if_value substitution or the else_value substitution."
+    ]
+  },
+
+  "FileContent": {
+    "prefix": "file content",
+    "body": "$(file-content ${1:path})$0",
+    "description": "Substitution that reads the contents of a file. If the file is not found a `SubstitutionFailure` error is raised."
+  },
+
+  "FindExecutable": {
+    "prefix": "find exec",
+    "body": "$(find-exec ${1:name})$0",
+    "description": "Substitution that tries to locate an executable on the PATH. :raise: SubstitutionFailure when executable not found"
+  },
+
+  "LaunchConfiguration": {
+    "prefix": "var",
+    "body": "$(var ${1:name})$0",
+    "description": "Substitution that can access launch configuration variables."
+  },
+
+  "LaunchConfiguration with default": {
+    "prefix": "var with default",
+    "body": "$(var ${1:name} ${2:default})$0",
+    "description": "Substitution that can access launch configuration variables."
+  },
+
+  "LaunchLogDir": {
+    "prefix": "launch log dir",
+    "body": "$(launch_log_dir)$0",
+    "description": "Substitution that returns the absolute path to the current launch log directory."
+  },
+
+  "LaunchLogDir_": {
+    "prefix": "log dir",
+    "body": "$(log_dir)$0",
+    "description": "Substitution that returns the absolute path to the current launch log directory."
+  },
+
+  "PythonExpression": {
+    "prefix": "eval",
+    "body": "$(eval ${1:expr})$0",
+    "description": [
+      "Substitution that can access contextual local variables.",
+      "The expression may contain Substitutions, but must return something that can be converted to a string with `str()`.",
+      "It also may contain math symbols and functions."
+    ]
+  },
+
+  "PythonExpression with modules": {
+    "prefix": "eval with modules",
+    "body": "$(eval ${1:expr} ${2:modules})$0",
+    "description": [
+      "Substitution that can access contextual local variables.",
+      "The expression may contain Substitutions, but must return something that can be converted to a string with `str()`.",
+      "It also may contain math symbols and functions."
+    ]
+  },
+
+  "ThisLaunchFile": {
+    "prefix": "filename",
+    "body": "$(filename)",
+    "description": [
+      "Substitution that returns the absolute path to the current launch file."
+    ]
+  },
+
+  "ThisLaunchFileDir": {
+    "prefix": "dirname",
+    "body": "$(dirname)",
+    "description": [
+      "Substitution that returns the absolute path to the current launch file."
+    ]
+  }
+}
