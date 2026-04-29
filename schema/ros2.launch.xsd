@@ -46,6 +46,16 @@
     <xs:union memberTypes="xs:boolean xs:string" />
   </xs:simpleType>
 
+  <xs:simpleType name="OutputType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="screen" />
+      <xs:enumeration value="log" />
+      <xs:enumeration value="both" />
+      <xs:enumeration value="own_log" />
+      <xs:enumeration value="full" />
+    </xs:restriction>
+  </xs:simpleType>
+
   <!-- * Actions -->
   <xs:element name="action" type="Action" abstract="true" />
   <xs:complexType name="Action" abstract="true">
@@ -94,17 +104,7 @@
         <xs:attribute name="name" type="xs:string" />
         <xs:attribute name="on_exit" type="xs:string" fixed="shutdown" />
         <xs:attribute name="launch-prefix" type="xs:string" />
-        <xs:attribute name="output">
-          <xs:simpleType>
-            <xs:restriction base="xs:string">
-              <xs:enumeration value="screen" />
-              <xs:enumeration value="log" />
-              <xs:enumeration value="both" />
-              <xs:enumeration value="own_log" />
-              <xs:enumeration value="full" />
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:attribute>
+        <xs:attribute name="output" type="OutputType" />
         <xs:attribute name="respawn" type="BooleanOrString" />
         <!-- ! Invalid input has broken shutdown. e.g. "1.2", "abc" -->
         <xs:attribute name="respawn_max_retries" type="xs:integer" />
