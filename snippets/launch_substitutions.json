@@ -199,5 +199,48 @@
     "description": [
       "Substitution that returns the absolute path to the current launch file."
     ]
+  },
+
+  "FindPackagePrefix": {
+    "prefix": "find-pkg-prefix",
+    "body": "$(find-pkg-prefix ${1:pkg})$0",
+    "description": [
+      "Substitution that tries to locate the package prefix of a ROS package.",
+      "The ROS package is located using ament_index_python."
+    ]
+  },
+
+  "FindPackageShare": {
+    "prefix": "find-pkg-share",
+    "body": "$(find-pkg-share ${1:pkg})$0",
+    "description": [
+      "Substitution that tries to locate the share directory of a ROS package.",
+      "The directory is located using ament_index_python."
+    ]
+  },
+
+  "Parameter": {
+    "prefix": "param",
+    "body": "$(param ${1:name})$0",
+    "description": [
+      "Substitution that tries to get a parameter that was set by SetParameter."
+    ]
+  },
+
+  "Parameter with default": {
+    "prefix": "param",
+    "body": "$(param ${1:name} ${2:default})$0",
+    "description": [
+      "Substitution that tries to get a parameter that was set by SetParameter."
+    ]
+  },
+
+  "ExecutableInPackage": {
+    "prefix": "exec-in-pkg",
+    "body": "$(exec-in-pkg ${1:exec} ${2:pkg})$0",
+    "description": [
+      "Substitution that tries to locate an executable in the libexec directory of a ROS package.",
+      "The ROS package is located using ament_index_python."
+    ]
   }
 }
