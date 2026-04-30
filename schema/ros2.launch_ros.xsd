@@ -113,7 +113,8 @@
     <xs:complexContent>
       <xs:extension base="Action">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-          <xs:element name="composable_node" type="ComposableNode" />
+          <xs:element ref="composable_node" />
+          <xs:element ref="composable_lifecycle_node" />
         </xs:choice>
         <xs:attribute name="target" type="xs:string" use="required" />
       </xs:extension>
@@ -125,7 +126,8 @@
     <xs:complexContent>
       <xs:extension base="Node">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-          <xs:element name="composable_node" type="ComposableNode" />
+          <xs:element ref="composable_node" />
+          <xs:element ref="composable_lifecycle_node" />
         </xs:choice>
       </xs:extension>
     </xs:complexContent>
@@ -215,11 +217,22 @@
         </xs:complexType>
       </xs:element>
       <xs:element name="extra_arg" type="NameValueType" />
+      <xs:element name="param" type="ParamType" />
     </xs:choice>
     <xs:attribute name="pkg" type="xs:string" use="required" />
     <xs:attribute name="plugin" type="xs:string" use="required" />
     <xs:attribute name="name" type="xs:string" use="required" />
     <xs:attribute name="if" type="BooleanOrString" />
     <xs:attribute name="unless" type="BooleanOrString" />
+    <xs:attribute name="namespace" type="NamespaceType" />
+  </xs:complexType>
+
+  <xs:element name="composable_lifecycle_node" type="ComposableLifecycleNode" />
+  <xs:complexType name="ComposableLifecycleNode">
+    <xs:complexContent>
+      <xs:extension base="ComposableNode">
+        <xs:attribute name="autostart" type="BooleanOrString" />
+      </xs:extension>
+    </xs:complexContent>
   </xs:complexType>
 </xs:schema>
