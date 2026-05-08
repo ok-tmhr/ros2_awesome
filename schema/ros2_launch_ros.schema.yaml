@@ -22,15 +22,11 @@ $defs:
       $ref: "#/$defs/action"
   action:
     type: object
-    oneOf:
-      - properties:
-          append_env:
-            $ref: "https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml#/$defs/append_env"
-        required: [append_env]
-      - properties:
-          arg:
-            $ref: "#/$defs/arg"
-        required: [arg]
+    properties:
+      append_env:
+        $ref: "https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml#/$defs/append_env"
+      arg:
+        $ref: "#/$defs/arg"
   arg:
     type: object
     allOf:
