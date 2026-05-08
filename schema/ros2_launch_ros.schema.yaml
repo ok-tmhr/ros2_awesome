@@ -1,86 +1,85 @@
-# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
-$schema: https://json-schema.org/draft/2020-12/schema
-$id: https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch_ros.schema.yaml
-type: object
-properties:
-  launch:
-    $ref: "#/$defs/launch"
-$defs:
-  launch:
-    oneOf:
-      - $ref: "#/$defs/children"
-      - type: object
-        properties:
-          deprecated:
-            type: string
-          children:
-            $ref: "#/$defs/children"
-        required: [children]
-  children:
-    type: array
-    items:
-      $ref: "#/$defs/action"
-  action:
-    type: object
-    properties:
-      arg:
-        $ref: "#/$defs/arg"
-      # append_env:
-      #   $ref: "https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml#/$defs/append_env"
-  arg:
-    type: object
-    allOf:
-      - $ref: "https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml#/$defs/actionBase"
-    properties:
-      name:
-        type: string
-      default:
-        type: string
-      choice:
-        type: array
-        minItems: 1
-        items:
-          type: object
-          properties:
-            value:
-              type: string
-          required:
-            - value
-      description:
-        type: string
-    required:
-      - name
-    unevaluatedProperties: false
-    examples:
-      - launch:
-          - arg:
-              name: simple_argument
-      - launch:
-          - arg:
-              name: with_default_value
-              default: default
-      - launch:
-          - arg:
-              name: with_default_and_description
-              default: some_default
-              description: this argument is used to configure ...
-      - launch:
-          - arg:
-              name: mode
-              default: A
-              description: Choose between mode A and mode B
-              choice:
-                - A
-                - B
-    description: >-
-      Action that declares a new launch argument.
+# # yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
+# $schema: https://json-schema.org/draft/2020-12/schema
+# $id: https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch_ros.schema.yaml
+# type: object
+# properties:
+#   launch:
+#     $ref: "#/$defs/launch"
+# $defs:
+#   launch:
+#     oneOf:
+#       - $ref: "#/$defs/children"
+#       - type: object
+#         properties:
+#           deprecated:
+#             type: string
+#           children:
+#             $ref: "#/$defs/children"
+#         required: [children]
+#   children:
+#     type: array
+#     items:
+#       $ref: "#/$defs/action"
+#   action:
+#     type: object
+#     properties:
+#       arg:
+#         $ref: "#/$defs/arg"
+#       # append_env:
+#       #   $ref: "https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml#/$defs/append_env"
+#   arg:
+#     type: object
+#     allOf:
+#       - $ref: "https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml#/$defs/actionBase"
+#     properties:
+#       name:
+#         type: string
+#       default:
+#         type: string
+#       choice:
+#         type: array
+#         minItems: 1
+#         items:
+#           type: object
+#           properties:
+#             value:
+#               type: string
+#           required:
+#             - value
+#       description:
+#         type: string
+#     required:
+#       - name
+#     unevaluatedProperties: false
+#     examples:
+#       - launch:
+#           - arg:
+#               name: simple_argument
+#       - launch:
+#           - arg:
+#               name: with_default_value
+#               default: default
+#       - launch:
+#           - arg:
+#               name: with_default_and_description
+#               default: some_default
+#               description: this argument is used to configure ...
+#       - launch:
+#           - arg:
+#               name: mode
+#               default: A
+#               description: Choose between mode A and mode B
+#               choice:
+#                 - A
+#                 - B
+#     description: >-
+#       Action that declares a new launch argument.
 
-      A launch argument is stored in a "launch configuration" of the same name.
-      See `launch.actions.SetLaunchConfiguration` and
-      `launch.substitutions.LaunchConfiguration`.
+#       A launch argument is stored in a "launch configuration" of the same name.
+#       See `launch.actions.SetLaunchConfiguration` and
+#       `launch.substitutions.LaunchConfiguration`.
 
-      Any launch arguments declared within a `launch.LaunchDescription` will be
-      exposed as arguments when that launch description is included.
+#       Any launch arguments declared within a `launch.LaunchDescription` will be
+#       exposed as arguments when that launch description is included.
 
-
-      https://docs.ros.org/en/jazzy/p/launch/launch.actions.declare_launch_argument.html#module-launch.actions.declare_launch_argument
+#       https://docs.ros.org/en/jazzy/p/launch/launch.actions.declare_launch_argument.html#module-launch.actions.declare_launch_argument
