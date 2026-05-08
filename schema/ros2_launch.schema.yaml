@@ -4,7 +4,7 @@ $id: https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-s
 type: object
 properties:
   launch:
-    $ref: "#/defs/launch"
+    $ref: "#/$defs/launch"
 $defs:
   launch:
     oneOf:
