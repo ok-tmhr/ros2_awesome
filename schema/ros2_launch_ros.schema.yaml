@@ -25,8 +25,8 @@ $defs:
     properties:
       arg:
         $ref: "#/$defs/arg"
-      append_env:
-        $ref: "https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml#/$defs/append_env"
+      # append_env:
+      #   $ref: "https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml#/$defs/append_env"
   arg:
     type: object
     allOf:
