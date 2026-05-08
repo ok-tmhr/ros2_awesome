@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 $schema: https://json-schema.org/draft/2020-12/schema
 $id: https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch_ros.schema.yaml
-$ref: https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml
+allOf:
+  - $ref: https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml
