@@ -4,27 +4,19 @@ $id: https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-s
 type: object
 properties:
   launch:
-    $ref: "#/$defs/launch"
-$defs:
-  launch:
-    oneOf:
-      - $ref: "#/$defs/children"
-      - type: object
-        properties:
-          deprecated:
-            type: string
-          children:
-            $ref: "#/$defs/children"
-        required: [children]
-  children:
     type: array
     items:
       $ref: "#/$defs/action"
+$defs:
   action:
     type: object
     properties:
+      append_env:
+        $ref: https://ok-tmhr.github.io/ros2_schema/schema/ros2_launch.schema.yaml#/$defs/append_env
       arg:
         $ref: "#/$defs/arg"
+    maxProperties: 1
+    unevaluatedProperties: false
   arg:
     type: object
     allOf:
