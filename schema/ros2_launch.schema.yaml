@@ -12,6 +12,7 @@ $defs:
     type: object
     properties:
       append_env:
+        $id: /append_env
         $ref: "#/$defs/append_env"
     unevaluatedProperties: false
   actionBase:
