@@ -91,6 +91,11 @@ $(not value)
 $(eval ...)
 ```
 
+### Substitution in Parameter Files
+
+ROS 2 substitutions are not limited to launch files.
+They also work inside parameter YAML files when loaded through a launch file.
+
 ### Install as a local VS Code extension
 
 1. Clone this repository
