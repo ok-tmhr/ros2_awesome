@@ -1,6 +1,7 @@
 # yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 $schema: "https://json-schema.org/draft/2020-12/schema"
 $id: "https://ok-tmhr.github.io/ros2_awesome/schema/launch_yaml.yaml"
+title: launch
 type: object
 properties:
   launch:
@@ -130,6 +131,7 @@ $defs:
     type: string
     pattern: \$\(.+\)
   append_env:
+    title: append_env
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -169,6 +171,7 @@ $defs:
               prepend: true
               separator: ":"
   arg:
+    title: arg
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -222,6 +225,7 @@ $defs:
       exposed as arguments when that launch description is included.
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.declare_launch_argument.html#module-launch.actions.declare_launch_argument
   executable:
+    title: executable
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -365,6 +369,7 @@ $defs:
                 name: env_variable
                 value: env_var_value
   group:
+    title: group
     oneOf:
       - $ref: "#/$defs/children"
       - type: object
@@ -408,6 +413,7 @@ $defs:
                 - executable:
                     cmd: ps
   include:
+    title: include
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -445,6 +451,7 @@ $defs:
                 - name: other_arg2
                   value: value2
   let:
+    title: let
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -469,6 +476,7 @@ $defs:
               name: var1
               value: value1
   log:
+    title: log
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -486,6 +494,7 @@ $defs:
           - log:
               message: some log message
   reset:
+    title: reset
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -517,6 +526,7 @@ $defs:
                 - name: var2
                   value: value2
   reset_env:
+    title: reset_env
     $id: /reset_env
     $ref: "#/$defs/actionBase"
     unevaluatedProperties: false
@@ -530,6 +540,7 @@ $defs:
       - launch:
           - reset: {}
   set_env:
+    title: set_env
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -553,6 +564,7 @@ $defs:
               name: env_variable1
               value: env_var_value1
   shutdown:
+    title: shutdown
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -571,6 +583,7 @@ $defs:
           - shutdown:
               reason: some reason
   timer:
+    title: timer
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -614,6 +627,7 @@ $defs:
                   - executable:
                       cmd: delayed_node
   unset_env:
+    title: unset_env
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -633,6 +647,7 @@ $defs:
           - unset_env:
               name: env_variable
   lifecycle_node:
+    title: lifecycle_node
     type: object
     allOf:
       - $ref: "#/$defs/node"
@@ -643,6 +658,7 @@ $defs:
       Action that executes a ROS lifecycle node.
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.lifecycle_node.html
   load_composable_node:
+    title: load_composable_node
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -701,6 +717,7 @@ $defs:
                     - name: use_intra_process_comms
                       value: true
   node:
+    title: node
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -923,6 +940,7 @@ $defs:
                 - from: /output/cmd_vel
                   to: /turtlesim2/turtle1/cmd_vel
   node_container:
+    title: node_container
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -1025,6 +1043,7 @@ $defs:
                     - name: use_intra_process_comms
                       value: true
   push_ros_namespace:
+    title: push_ros_namespace
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -1044,6 +1063,7 @@ $defs:
           - push_ros_namespace:
               namespace: ns_value
   ros_timer:
+    title: ros_timer
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -1084,6 +1104,7 @@ $defs:
                   cmd: echo 'command triggered'
             cancel_on_shutdown: true
   set_parameter:
+    title: set_parameter
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -1106,6 +1127,7 @@ $defs:
               name: my_param
               value: "2"
   set_parameters_from_file:
+    title: set_parameters_from_file
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -1124,6 +1146,7 @@ $defs:
           - set_parameters_from_file:
               filename: path/to/file.yaml
   set_remap:
+    title: set_remap
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -1147,6 +1170,7 @@ $defs:
               from: asd
               to: bsd
   set_ros_log_dir:
+    title: set_ros_log_dir
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -1171,6 +1195,7 @@ $defs:
           - set_ros_log_dir:
               new_log_dir: path/to/new_log_dir
   set_use_sim_time:
+    title: set_use_sim_time
     type: object
     allOf:
       - $ref: "#/$defs/actionBase"
@@ -1190,6 +1215,7 @@ $defs:
           set_use_sim_time:
             value: true
   composable_node:
+    title: composable_node
     type: object
     properties:
       pkg:
