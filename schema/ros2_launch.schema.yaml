@@ -1,26 +1,16 @@
 # yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: https://raw.githubusercontent.com/ok-tmhr/ros2_schema/refs/heads/external-schema/schema/ros2_launch.schema.yaml
+$id: https://ok-tmhr.github.io/ros2_schema/schema/ros2_launch.schema.yaml
+$dynamicAnchor: launch
 type: object
 properties:
   launch:
-    $ref: "#/$defs/launch"
-$defs:
-  launch:
-    oneOf:
-      - $ref: "#/$defs/children"
-      - type: object
-        properties:
-          deprecated:
-            type: string
-          children:
-            $ref: "#/$defs/children"
-        required: [children]
-  children:
     type: array
     items:
-      $ref: "#/$defs/action"
+      $dynamicRef: "#action"
+$defs:
   action:
+    $dynamicAnchor: action
     type: object
     oneOf:
       - properties:
@@ -28,6 +18,7 @@ $defs:
             $ref: "#/$defs/append_env"
         required: [append_env]
   actionBase:
+    $dynamicAnchor: actionBase
     type: object
     properties:
       if:
