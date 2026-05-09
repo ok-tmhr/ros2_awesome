@@ -1,63 +1,129 @@
-# ROS 2 Launch Substitutions Snippets
+# ROS 2 awesome
 
-A lightweight VSCode snippet extension for ROS 2 launch substitution expressions.
+## Schema Support for ROS 2 Launch Files
 
-:contentReference[oaicite:0]{index=0}
+`ros2_awesome` provides **schema definitions** for ROS 2 launch files in both **YAML** and **XML** formats.
+These schemas enable:
 
-This extension provides reusable snippet templates for ROS 2 launch substitutions, compatible with:
+- Validation
+- Auto-completion
+- Hover documentation
+- Error checking
 
-- YAML launch files
-- XML launch files
-- ROS 2 parameter files
+in editors such as **VS Code**.
 
-## 🚀 Features
+## 📌 Available Schemas
 
-All snippets follow ROS 2 launch substitution syntax:
+### YAML Schema
 
-```text
-$(substitution args...)
+```md
+https://ok-tmhr.github.io/ros2_awesome/schema/launch.yaml
 ```
 
-## 📁 Supported Formats
+### XML Schema
 
-### YAML launch files
+```md
+https://ok-tmhr.github.io/ros2_awesome/schema/launch_ros.xsd
+```
 
-Works with standard ROS 2 YAML launch descriptions.
+## 1. Using the Schema in YAML Launch Files
 
-### XML launch files
-
-Compatible with ROS 2 XML launch definitions.
-
-### ROS 2 parameter files
-
-These snippets can also be used in ROS 2 parameter YAML files.
-
-⚠️ Note:
-When using substitutions inside parameter files, enable substitution support on a launch file:
+You can explicitly specify the schema at the top of your `.launch.yaml` file:
 
 ```yaml
-allow_substs: true
+# yaml-language-server: $schema=https://ok-tmhr.github.io/ros2_awesome/schema/launch.yaml
+
+launch:
+  - arg:
+      name: example
 ```
 
-This is required for substitution expressions to be evaluated at runtime.
+This method is **portable** and works in any environment.
+See the `sample/` directory for complete examples.
 
-## 📌 Design Notes
+## 2. Using the Schema in XML Launch Files
 
-- Snippets are intentionally shared across YAML and XML for consistency
-- No runtime logic is included — only text expansion templates
-- Focus is on ROS 2 launch substitution readability and speed of authoring
+Add the schema reference inside the `<launch>` tag:
 
-## 🧠 ROS 2 Compatibility
+```xml
+<launch
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://ok-tmhr.github.io/ros2_awesome/schema/launch_ros.xsd">
 
-This extension targets standard ROS 2 launch substitution behavior as defined in the launch system.
+  <arg name="example"/>
+</launch>
+```
 
-It is compatible with:
+## 3. VS Code: Associate the Schema Automatically
 
-- ROS 2 launch files
-- Launch XML
-- Launch YAML descriptions
-- Parameter YAML files (with `allow_substs: true`)
+If you prefer not to write `$schema` in every YAML file,
+VS Code can automatically apply the schema based on file patterns.
 
-## 📄 License
+Open **Settings (JSON)** and add:
 
-Apache 2.0
+```json
+{
+  "yaml.schemas": {
+    "https://ok-tmhr.github.io/ros2_awesome/schema/launch.yaml": [
+      "*.launch.yaml",
+      "*.launch.yml"
+    ]
+  }
+}
+```
+
+Now all launch YAML files will automatically use the schema.
+
+## 4. VS Code Snippets for Launch Substitutions
+
+This repository includes a snippet extension:
+
+```md
+launch_substitution.json
+```
+
+It provides auto-completion for ROS 2 substitution syntax:
+
+```md
+$(var name)
+$(env FOO)
+$(not value)
+$(eval ...)
+```
+
+### Install as a local VS Code extension
+
+1. Clone this repository
+2. Open command pallet (`ctrl + shift + p`)
+3. Run **Developer: Install Extension from Location...**
+4. Choose repository's directory
+
+VS Code treats snippet JSON files as installable local extensions.
+
+### Features
+
+- Typing `$` triggers substitution snippets
+- Typing `not` triggers `$(not …)`
+- Works in both YAML and XML launch files
+- Fully customizable
+
+## 5. Sample Files
+
+The `sample/` directory contains:
+
+- YAML launch examples using `$schema`
+- XML launch examples using XSD
+
+These samples are the quickest way to understand how the schema behaves.
+
+## 6. Project Goals
+
+- Provide a **strict, complete, and editor-friendly** schema for ROS 2 launch files
+- Improve developer experience with **auto-completion** and **error detection**
+- Offer **snippets** for common substitution patterns
+- Maintain compatibility with VS Code and other YAML/XML tooling
+
+## 7. Contributions
+
+Issues and PRs are welcome.
+Schema improvements, missing elements, or substitution patterns can be added incrementally.
