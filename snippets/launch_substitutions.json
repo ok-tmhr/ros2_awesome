@@ -1,30 +1,30 @@
 {
   "AnonName": {
-    "prefix": "anon",
+    "prefix": ["anon", "$(anon)"],
     "body": "$(anon)",
     "description": "Generates an anonymous id based on name."
   },
 
   "NotSubstitution": {
-    "prefix": "not",
+    "prefix": ["not", "$(not)"],
     "body": "$(not ${1:value})$0",
     "description": "Substitution that returns 'not' of the input boolean value."
   },
 
   "AndSubstitution": {
-    "prefix": "and",
+    "prefix": ["and", "$(and)"],
     "body": "$(and ${1:left} ${2:right})$0",
     "description": "Substitution that returns 'and' of the input boolean values."
   },
 
   "OrSubstitution": {
-    "prefix": "or",
+    "prefix": ["or", "$(or)"],
     "body": "$(or ${1:left} ${2:right})$0",
     "description": "Substitution that returns 'or' of the input boolean values."
   },
 
   "AnySubstitution": {
-    "prefix": "any",
+    "prefix": ["any", "$(any)"],
     "body": "$(any ${1:args})$0",
     "description": [
       "Substitute to the string 'true' if at least one of the input arguments evaluates to true.",
@@ -34,7 +34,7 @@
   },
 
   "AllSubstitution": {
-    "prefix": "all",
+    "prefix": ["all", "$(all)"],
     "body": "$(all ${1:args})$0",
     "description": [
       "Substitutes to the string 'true' if all of the input arguments evaluate to true.",
@@ -45,7 +45,7 @@
   },
 
   "Command": {
-    "prefix": "command",
+    "prefix": ["command", "$(command)"],
     "body": "$(command ${1:cmd})$0",
     "description": [
       "Substitution that gets the output of a command as a string.",
@@ -56,7 +56,7 @@
   },
 
   "Command with output": {
-    "prefix": "command with output",
+    "prefix": ["command with output", "$(output)"],
     "body": "$(command ${1:cmd} ${2:output})$0",
     "description": [
       "Substitution that gets the output of a command as a string.",
@@ -74,7 +74,7 @@
   },
 
   "EnvironmentVariable": {
-    "prefix": "env",
+    "prefix": ["env", "$(env)"],
     "body": "$(env ${1:name})$0",
     "description": [
       "Substitution that gets an environment variable value as a string.",
@@ -87,7 +87,7 @@
   },
 
   "EnvironmentVariable with default": {
-    "prefix": "env with default",
+    "prefix": ["env with default", "$(default)"],
     "body": "$(env ${1:name} ${2:default})$0",
     "description": [
       "Substitution that gets an environment variable value as a string.",
@@ -100,19 +100,19 @@
   },
 
   "EqualsSubstitution": {
-    "prefix": "equals",
+    "prefix": ["equals", "$(equals)"],
     "body": "$(equals ${1:left} ${2:right})$0",
     "description": "Substitution that checks if two inputs are equal. Returns 'true' or 'false' strings depending on the result."
   },
 
   "NotEqualsSubstitution": {
-    "prefix": "not equals",
+    "prefix": ["not equals", "$(equals)"],
     "body": "$(not-equals ${1:left} ${2:right})$0",
     "description": "Substitution that checks if two inputs are not equal. Returns 'true' or 'false' strings depending on the result."
   },
 
   "IfElseSubstitution": {
-    "prefix": "if",
+    "prefix": ["if", "$(if)"],
     "body": "$(if ${1:condition} ${2:if_value})$0",
     "description": [
       "Substitution that conditionally returns one of two substitutions.",
@@ -121,7 +121,7 @@
   },
 
   "IfElseSubstitution with else value": {
-    "prefix": "if else",
+    "prefix": ["if else", "$(else)"],
     "body": "$(if ${1:condition} ${2:if_value} ${3:else_value})$0",
     "description": [
       "Substitution that conditionally returns one of two substitutions.",
@@ -130,43 +130,43 @@
   },
 
   "FileContent": {
-    "prefix": "file content",
+    "prefix": ["file content", "$(content)"],
     "body": "$(file-content ${1:path})$0",
     "description": "Substitution that reads the contents of a file. If the file is not found a `SubstitutionFailure` error is raised."
   },
 
   "FindExecutable": {
-    "prefix": "find exec",
+    "prefix": ["find exec", "$(exec)"],
     "body": "$(find-exec ${1:name})$0",
     "description": "Substitution that tries to locate an executable on the PATH. :raise: SubstitutionFailure when executable not found"
   },
 
   "LaunchConfiguration": {
-    "prefix": "var",
+    "prefix": ["var", "$(var)"],
     "body": "$(var ${1:name})$0",
     "description": "Substitution that can access launch configuration variables."
   },
 
   "LaunchConfiguration with default": {
-    "prefix": "var with default",
+    "prefix": ["var with default", "$(default)"],
     "body": "$(var ${1:name} ${2:default})$0",
     "description": "Substitution that can access launch configuration variables."
   },
 
   "LaunchLogDir": {
-    "prefix": "launch log dir",
+    "prefix": ["launch log dir", "$(dir)"],
     "body": "$(launch_log_dir)$0",
     "description": "Substitution that returns the absolute path to the current launch log directory."
   },
 
   "LaunchLogDir_": {
-    "prefix": "log dir",
+    "prefix": ["log dir", "$(dir)"],
     "body": "$(log_dir)$0",
     "description": "Substitution that returns the absolute path to the current launch log directory."
   },
 
   "PythonExpression": {
-    "prefix": "eval",
+    "prefix": ["eval", "$(eval)"],
     "body": "$(eval ${1:expr})$0",
     "description": [
       "Substitution that can access contextual local variables.",
@@ -176,7 +176,7 @@
   },
 
   "PythonExpression with modules": {
-    "prefix": "eval with modules",
+    "prefix": ["eval with modules", "$(modules)"],
     "body": "$(eval ${1:expr} ${2:modules})$0",
     "description": [
       "Substitution that can access contextual local variables.",
@@ -186,7 +186,7 @@
   },
 
   "ThisLaunchFile": {
-    "prefix": "filename",
+    "prefix": ["filename", "$(filename)"],
     "body": "$(filename)",
     "description": [
       "Substitution that returns the absolute path to the current launch file."
@@ -194,7 +194,7 @@
   },
 
   "ThisLaunchFileDir": {
-    "prefix": "dirname",
+    "prefix": ["dirname", "$(dirname)"],
     "body": "$(dirname)",
     "description": [
       "Substitution that returns the absolute path to the current launch file."
@@ -202,7 +202,7 @@
   },
 
   "FindPackagePrefix": {
-    "prefix": "find-pkg-prefix",
+    "prefix": ["find-pkg-prefix", "$(prefix)"],
     "body": "$(find-pkg-prefix ${1:pkg})$0",
     "description": [
       "Substitution that tries to locate the package prefix of a ROS package.",
@@ -211,7 +211,7 @@
   },
 
   "FindPackageShare": {
-    "prefix": "find-pkg-share",
+    "prefix": ["find-pkg-share", "$(share)"],
     "body": "$(find-pkg-share ${1:pkg})$0",
     "description": [
       "Substitution that tries to locate the share directory of a ROS package.",
@@ -220,7 +220,7 @@
   },
 
   "Parameter": {
-    "prefix": "param",
+    "prefix": ["param", "$(param)"],
     "body": "$(param ${1:name})$0",
     "description": [
       "Substitution that tries to get a parameter that was set by SetParameter."
@@ -228,7 +228,7 @@
   },
 
   "Parameter with default": {
-    "prefix": "param",
+    "prefix": ["param", "$(param)"],
     "body": "$(param ${1:name} ${2:default})$0",
     "description": [
       "Substitution that tries to get a parameter that was set by SetParameter."
@@ -236,7 +236,7 @@
   },
 
   "ExecutableInPackage": {
-    "prefix": "exec-in-pkg",
+    "prefix": ["exec-in-pkg", "$(pkg)"],
     "body": "$(exec-in-pkg ${1:exec} ${2:pkg})$0",
     "description": [
       "Substitution that tries to locate an executable in the libexec directory of a ROS package.",
