@@ -1,24 +1,18 @@
 # yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 $schema: https://json-schema.org/draft/2020-12/schema
 $id: https://ok-tmhr.github.io/ros2_schema/schema/ros2_launch.schema.yaml
-$dynamicAnchor: launch
 type: object
 properties:
   launch:
     type: array
     items:
-      $dynamicRef: "#action"
+      $ref: "#/$defs/action"
 $defs:
   action:
-    $dynamicAnchor: action
     type: object
     oneOf:
-      - properties:
-          append_env:
-            $ref: "#/$defs/append_env"
-        required: [append_env]
+      - $ref: "#/$defs/append_env"
   actionBase:
-    $dynamicAnchor: actionBase
     type: object
     properties:
       if:
@@ -43,43 +37,47 @@ $defs:
     pattern: \$\(.+\)
   append_env:
     type: object
-    allOf:
-      - $ref: "#/$defs/actionBase"
-    properties:
-      name:
-        type: string
-        description: the name of the environment variable
-      value:
-        type: string
-        description: the value to set or append
-      prepend:
-        type: boolean
-        description: whether the value should be prepended instead
-      separator:
-        type: string
-        description: "the separator to use, defaulting to a platform-specific separator"
     required:
-      - name
-      - value
-    unevaluatedProperties: false
-    description: >-
-      Action that appends to an environment variable if it exists and sets it if
-      it does not.
+      - append_env
+    properties:
+      append_env:
+        allOf:
+          - $ref: "#/$defs/actionBase"
+        properties:
+          name:
+            type: string
+            description: the name of the environment variable
+          value:
+            type: string
+            description: the value to set or append
+          prepend:
+            type: boolean
+            description: whether the value should be prepended instead
+          separator:
+            type: string
+            description: "the separator to use, defaulting to a platform-specific separator"
+        required:
+          - name
+          - value
+        unevaluatedProperties: false
+        description: >-
+          Action that appends to an environment variable if it exists and sets it if
+          it does not.
 
-      It can optionally prepend instead of appending. It can also optionally use
-      a custom separator, with the default being a platform-specific separator,
-      os.pathsep.
+          It can optionally prepend instead of appending. It can also optionally use
+          a custom separator, with the default being a platform-specific separator,
+          os.pathsep.
 
 
-      https://docs.ros.org/en/jazzy/p/launch/launch.actions.append_environment_variable.html
-    examples:
-      - launch:
-          - append_env:
-              name: env_variable
-              value: env_var_value
-      - launch:
-          - append_env:
-              name: env_variable
-              value: env_var_value
-              prepend: true
-              separator: ":"
+          https://docs.ros.org/en/jazzy/p/launch/launch.actions.append_environment_variable.html
+        examples:
+          - launch:
+              - append_env:
+                  name: env_variable
+                  value: env_var_value
+          - launch:
+              - append_env:
+                  name: env_variable
+                  value: env_var_value
+                  prepend: true
+                  separator: ":"
