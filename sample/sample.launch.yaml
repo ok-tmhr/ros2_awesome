@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://ok-tmhr.github.io/ros2_awesome/schema/launch.yaml
+
+launch:
+  - arg:
+      name: with_default_and_description
+      default: some_default
+      description: this argument is used to configure ...
+  - group:
+      scoped: false
+      children:
+        - executable:
+            cmd: ls
+        - executable:
+            cmd: ps
+  - log:
+      message: some log message
