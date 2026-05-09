@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
 $schema: "https://json-schema.org/draft/2020-12/schema"
-$id: "https://ok-tmhr.github.io/ros2_awesome/schema/launch_yaml.yaml"
+$id: "https://ok-tmhr.github.io/ros2_awesome/schema/launch.yaml"
 title: launch
 type: object
 properties:
