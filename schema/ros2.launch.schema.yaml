@@ -18,20 +18,15 @@ properties:
       A YAML launch file consists of a root launch entity containing a list of
       action entities and their parameters. Each action entity corresponds to a
       ROS 2 launch action that will be executed during the launch process.
-
       The YAML structure maps directly to the action hierarchy in the launch
       system.
-
       Available actions are exposed with `@expose_action` annotations, e.g.
       https://github.com/ros2/launch/blob/jazzy/launch/launch/actions/declare_launch_argument.py#L34.
-
       Launch actions can accept Substitution within their some properties.
       Substitutions use the $(type args) syntax, where type is the substitution
       type and args are the arguments specific to that type. All available
       substitutions are exposed by `@expose_substitution` annotations, e.g.
       https://github.com/ros2/launch/blob/jazzy/launch/launch/substitutions/launch_configuration.py#L33.
-
-
       https://github.com/ros2/launch/tree/jazzy/launch_yaml
     examples:
       - launch:
@@ -69,248 +64,33 @@ $defs:
   action:
     type: object
     unevaluatedProperties: false
-    oneOf:
-      - properties:
-          append_env:
-            $ref: "#/$defs/append_env"
-        required:
-          - append_env
-        description: >-
-          AppendEnvironmentVariable
-
-
-          Action that appends to an environment variable if it exists and sets
-          it if it does not.
-      - properties:
-          arg:
-            $ref: "#/$defs/arg"
-        required:
-          - arg
-        description: |-
-          DeclareLaunchArgument
-
-          Action that declares a new launch argument.
-      - properties:
-          executable:
-            $ref: "#/$defs/executable"
-        required:
-          - executable
-        description: >-
-          ExecuteProcess
-
-
-          Action that begins executing a process and sets up event handlers for
-          it.
-      - properties:
-          group:
-            $ref: "#/$defs/group"
-        required:
-          - group
-        description: |-
-          GroupAction
-
-          Action that yields other actions.
-      - properties:
-          include:
-            $ref: "#/$defs/include"
-        required:
-          - include
-        description: >-
-          IncludeLaunchDescription
-
-
-          Action that includes a launch description source and yields its
-          entities when visited.
-      - properties:
-          let:
-            $ref: "#/$defs/let"
-        required:
-          - let
-        description: |-
-          SetLaunchConfiguration
-
-          Action that sets a launch configuration by name.
-      - properties:
-          log:
-            $ref: "#/$defs/log"
-        required:
-          - log
-        description: |-
-          LogInfo
-
-          Action that logs a message when executed.
-      - properties:
-          reset:
-            $ref: "#/$defs/reset"
-        required:
-          - reset
-        description: |-
-          ResetLaunchConfigurations
-
-          Action that resets launch configurations in the current context.
-      - properties:
-          reset_env:
-            $ref: "#/$defs/reset_env"
-        required:
-          - reset_env
-        description: |-
-          ResetEnvironment
-
-          Action that resets the environment in the current context.
-      - properties:
-          set_env:
-            $ref: "#/$defs/set_env"
-        required:
-          - set_env
-        description: |-
-          SetEnvironmentVariable
-
-          Action that sets an environment variable.
-      - properties:
-          shutdown:
-            $ref: "#/$defs/shutdown"
-        required:
-          - shutdown
-        description: >-
-          Shutdown
-
-
-          Action that shuts down a launched system by emitting Shutdown when
-          executed.
-      - properties:
-          timer:
-            $ref: "#/$defs/timer"
-        required:
-          - timer
-        description: >-
-          TimerAction
-
-
-          Action that defers other entities until a period of time has passed,
-          unless canceled.
-      - properties:
-          unset_env:
-            $ref: "#/$defs/unset_env"
-        required:
-          - unset_env
-        description: >-
-          UnsetEnvironmentVariable
-
-
-          Action that unsets an environment variable if it is set, otherwise
-          does nothing.
-      - properties:
-          lifecycle_node:
-            $ref: "#/$defs/lifecycle_node"
-        required:
-          - lifecycle_node
-        description: |-
-          LifecycleNode
-
-          Action that executes a ROS lifecycle node. New from launch_ros 0.29.4
-      - properties:
-          load_composable_node:
-            $ref: "#/$defs/load_composable_node"
-        required:
-          - load_composable_node
-        description: |-
-          LoadComposableNodes
-
-          Action that loads composable ROS nodes into a running container.
-      - properties:
-          node:
-            $ref: "#/$defs/node"
-        required:
-          - node
-        description: |-
-          Node
-
-          Action that executes a ROS node.
-      - properties:
-          node_container:
-            $ref: "#/$defs/node_container"
-        required:
-          - node_container
-        description: |-
-          ComposableNodeContainer
-
-          Action that executes a container ROS node for composable ROS nodes.
-      - properties:
-          push_ros_namespace:
-            $ref: "#/$defs/push_ros_namespace"
-        required:
-          - push_ros_namespace
-        description: |-
-          PushROSNamespace
-
-          Action that pushes the ros namespace.
-      - properties:
-          push-ros-namespace:
-            $ref: "#/$defs/push-ros-namespace"
-        required:
-          - push-ros-namespace
-        description: |-
-          PushROSNamespace
-
-          Action that pushes the ros namespace.
-      - properties:
-          ros_timer:
-            $ref: "#/$defs/ros_timer"
-        required:
-          - ros_timer
-        description: >-
-          ROSTimer
-
-
-          Action that defers other entities until a period of time has passed,
-          unless canceled.
-      - properties:
-          set_parameter:
-            $ref: "#/$defs/set_parameter"
-        required:
-          - set_parameter
-        description: |-
-          SetParameter
-
-          Action that sets a parameter in the current context.
-      - properties:
-          set_parameters_from_file:
-            $ref: "#/$defs/set_parameters_from_file"
-        required:
-          - set_parameters_from_file
-        description: >-
-          SetParameterFromFile
-
-
-          Action that sets parameters for all nodes in scope based on a given
-          yaml file.
-      - properties:
-          set_remap:
-            $ref: "#/$defs/set_remap"
-        required:
-          - set_remap
-        description: |-
-          SetRemap
-
-          Action that sets a remapping rule in the current context.
-      - properties:
-          set_ros_log_dir:
-            $ref: "#/$defs/set_ros_log_dir"
-        required:
-          - set_ros_log_dir
-        description: |-
-          SetROSLogDir
-
-          Action that sets the ros log directory.
-      - properties:
-          set_use_sim_time:
-            $ref: "#/$defs/set_use_sim_time"
-        required:
-          - set_use_sim_time
-        description: |-
-          SetUseSimTime
-
-          Action that sets the ‘use_sim_time’ parameter in the current context.
+    maxProperties: 1
+    properties:
+      append_env: { $ref: "#/$defs/append_env" }
+      arg: { $ref: "#/$defs/arg" }
+      executable: { $ref: "#/$defs/executable" }
+      group: { $ref: "#/$defs/group" }
+      include: { $ref: "#/$defs/include" }
+      let: { $ref: "#/$defs/let" }
+      log: { $ref: "#/$defs/log" }
+      reset: { $ref: "#/$defs/reset" }
+      reset_env: { $ref: "#/$defs/reset_env" }
+      set_env: { $ref: "#/$defs/set_env" }
+      shutdown: { $ref: "#/$defs/shutdown" }
+      timer: { $ref: "#/$defs/timer" }
+      unset_env: { $ref: "#/$defs/unset_env" }
+      lifecycle_node: { $ref: "#/$defs/lifecycle_node" }
+      load_composable_node: { $ref: "#/$defs/load_composable_node" }
+      node: { $ref: "#/$defs/node" }
+      node_container: { $ref: "#/$defs/node_container" }
+      push_ros_namespace: { $ref: "#/$defs/push_ros_namespace" }
+      push-ros-namespace: { $ref: "#/$defs/push_ros_namespace" }
+      ros_timer: { $ref: "#/$defs/ros_timer" }
+      set_parameter: { $ref: "#/$defs/set_parameter" }
+      set_parameters_from_file: { $ref: "#/$defs/set_parameters_from_file" }
+      set_remap: { $ref: "#/$defs/set_remap" }
+      set_ros_log_dir: { $ref: "#/$defs/set_ros_log_dir" }
+      set_use_sim_time: { $ref: "#/$defs/set_use_sim_time" }
   actionBase:
     type: object
     properties:
@@ -373,12 +153,9 @@ $defs:
     description: >-
       Action that appends to an environment variable if it exists and sets it if
       it does not.
-
       It can optionally prepend instead of appending. It can also optionally use
       a custom separator, with the default being a platform-specific separator,
       os.pathsep.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.append_environment_variable.html
     examples:
       - launch:
@@ -438,15 +215,11 @@ $defs:
                 - B
     description: >-
       Action that declares a new launch argument.
-
       A launch argument is stored in a "launch configuration" of the same name.
       See `launch.actions.SetLaunchConfiguration` and
       `launch.substitutions.LaunchConfiguration`.
-
       Any launch arguments declared within a `launch.LaunchDescription` will be
       exposed as arguments when that launch description is included.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.declare_launch_argument.html#module-launch.actions.declare_launch_argument
   executable:
     type: object
@@ -557,15 +330,11 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Construct an ExecuteProcess action.
-
       Many arguments are passed eventually to subprocess.Popen, so see the
       documentation for the class for additional details.
-
       This action, once executed, registers several event handlers for various
       process related events and will also emit events asynchronously when
       certain events related to the process occur.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.execute_process.html#module-launch.actions.execute_process
     examples:
       - launch:
@@ -617,14 +386,11 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that yields other actions.
-
       This action is used to nest other actions without including a separate
       launch description, while also optionally having a condition (like all
       other actions), scoping and forwarding launch configurations and
       environment variables, and/or declaring launch configurations for just the
       group and its yielded actions.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.group_action.html#module-launch.actions.group_action
     examples:
       - launch:
@@ -658,17 +424,13 @@ $defs:
     description: >-
       Action that includes a launch description source and yields its entities
       when visited.
-
       It is possible to pass arguments to the launch description, which it
       declared with the launch.actions.DeclareLaunchArgument action.
-
       If any given arguments do not match the name of any declared launch
       arguments, then they will still be set as Launch Configurations using the
       launch.actions.SetLaunchConfiguration action. This is done because it’s
       not always possible to detect all instances of the declare launch argument
       class in the given launch description.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.include_launch_description.html
     examples:
       - launch:
@@ -697,12 +459,9 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that sets a launch configuration by name.
-
       Launch configurations can be accessed by the LaunchConfiguration
       substitution and are accessible after being set, even in included
       LaunchDescription’s, but can be scoped with groups.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.set_launch_configuration.html
     examples:
       - launch:
@@ -719,9 +478,8 @@ $defs:
     required:
       - message
     unevaluatedProperties: false
-    description: |-
+    description: >-
       Action that logs a message when executed.
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.log_info.html
     examples:
       - launch:
@@ -737,21 +495,16 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that resets launch configurations in the current context.
-
       This action can be used to clear the launch configurations from the
       context it was called in. It optionally can be given a dictionary with
       launch configurations to be set after clearing. Launch configurations
       given in the dictionary are evaluated before the context launch
       configurations are cleared. This allows launch configurations to be passed
       through the clearing of the context.
-
       If launch_configurations is None or an empty dict then all launch
       configurations will be cleared.
-
       If launch_configurations has entries (i.e. {‘foo’: ‘FOO’}) then these will
       be set after the clearing operation.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.reset_launch_configurations.html
     examples:
       - launch:
@@ -769,12 +522,9 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that resets the environment in the current context.
-
       Clears any changes made by previous actions to the context environment.
       The environment is reset to the state it was in when the context was
       created, i.e. the contents of os.environ.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.reset_environment.html
     examples:
       - launch:
@@ -796,8 +546,6 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that sets an environment variable.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.set_environment_variable.html
     examples:
       - launch:
@@ -815,8 +563,6 @@ $defs:
     description: >-
       Action that shuts down a launched system by emitting Shutdown when
       executed.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.shutdown_action.html
     examples:
       - launch:
@@ -852,16 +598,12 @@ $defs:
     description: >-
       Action that defers other entities until a period of time has passed,
       unless canceled.
-
       All timers are “one-shot”, in that they only fire one time and never
       again.
-
       Entities executed after the given period of time can access the launch
       configurations that exist at the time that the timer action executed, but
       changes made by them will not persist. This is similar to grouping the
       entities in a launch.actions.GroupAction with scoped=True.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.timer_action.html
     examples:
       - launch:
@@ -885,8 +627,6 @@ $defs:
     description: >-
       Action that unsets an environment variable if it is set, otherwise does
       nothing.
-
-
       https://docs.ros.org/en/jazzy/p/launch/launch.actions.unset_environment_variable.html
     examples:
       - launch:
@@ -901,8 +641,6 @@ $defs:
         $ref: "#/$defs/booleanString"
     description: >-
       Action that executes a ROS lifecycle node.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.lifecycle_node.html
   load_composable_node:
     type: object
@@ -922,8 +660,6 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that loads composable ROS nodes into a running container.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.load_composable_nodes.html
     examples:
       - launch:
@@ -1151,9 +887,8 @@ $defs:
               unevaluatedProperties: false
     required:
       - exec
-    description: |-
+    description: >-
       Action that executes a ROS node.
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.node.html
     examples:
       - launch:
@@ -1199,8 +934,6 @@ $defs:
         description: >-
           Describes a ROS node that can be loaded into a container with other
           nodes.
-
-
           https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.descriptions.composable_node.html
       cwd:
         $ref: "#/$defs/node/properties/cwd"
@@ -1253,8 +986,6 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that executes a container ROS node for composable ROS nodes.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.composable_node_container.html
     examples:
       - launch:
@@ -1305,18 +1036,13 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that pushes the ros namespace.
-
       It’s automatically popped when used inside a scoped GroupAction. There’s
       no other way of popping it.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.push_ros_namespace.html
     examples:
       - launch:
           - push_ros_namespace:
               namespace: ns_value
-  push-ros-namespace:
-    $ref: "#/$defs/push_ros_namespace"
   ros_timer:
     type: object
     allOf:
@@ -1345,12 +1071,9 @@ $defs:
     description: >-
       Action that defers other entities until a period of time has passed,
       unless canceled.
-
       This timer uses ROS time instead of wall clock time. To enable the use of
       sim time, you must also use the SetUseSimTime action. All timers are
       “one-shot”, in that they only fire one time and never again.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.ros_timer.html
     examples:
       - launch:
@@ -1375,10 +1098,7 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that sets a parameter in the current context.
-
       This parameter will be set in all the nodes launched in the same scope.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_parameter.html
     examples:
       - launch:
@@ -1398,8 +1118,6 @@ $defs:
     description: >-
       Action that sets parameters for all nodes in scope based on a given yaml
       file.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_parameters_from_file.html
     examples:
       - launch:
@@ -1420,11 +1138,8 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that sets a remapping rule in the current context.
-
       This remapping rule will be passed to all the nodes launched in the same
       scope, overriding the ones specified in the Node action constructor.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_remap.html
     examples:
       - launch:
@@ -1443,18 +1158,13 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that sets the ros log directory.
-
       This is done by setting the ROS_LOG_DIR environment variable, which will
       influence all processes started after that time, in which ros was
       initialized.
-
       This can be used in combination with launch.actions.GroupAction and its
       scoped=true option to provide scoped changes to this environment variable.
-
       Note this will not affect nodes loaded into component containers which
       were started before this action is executed.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_ros_log_dir.html
     examples:
       - launch:
@@ -1474,8 +1184,6 @@ $defs:
     unevaluatedProperties: false
     description: >-
       Action that sets the ‘use_sim_time’ parameter in the current context.
-
-
       https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_use_sim_time.html
     examples:
       - launch:
@@ -1555,6 +1263,4 @@ description: >-
   At the same time, it provides extension points so that the set of things that
   these core features can operate on, or integrate with, can be expanded with
   additional packages.
-
-
   https://github.com/ros2/launch/blob/rolling/launch/doc/source/architecture.rst
