@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch deprecated="somewhat" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="https://ok-tmhr.github.io/ros2_awesome/schema/launch_ros.xsd">
+
+  <append_env name="a" value="1" prepend="$(env a 1)" />
+  <arg name="/" default=""></arg>
+
+  <executable cmd="ls" cwd="." name="" on_exit="shutdown" launch-prefix="" output="full"
+    respawn="$(env a 1)" if="false"></executable>
+  <executable cmd="ls" output="log" respawn="$(env a 1)" respawn_max_retries="0"></executable>
+  <executable cmd="ls" name="" output="screen" respawn="true" respawn_max_retries="1"
+    shell="$(env a 1)" emulate_tty="$(env a 1)">
+    <env name="" value="" />
+  </executable>
+
+  <group scoped="">
+    <keep name="" value="" />
+    <keep name="" value="" />
+    <group>
+      <group>
+        <timer period="0">
+          <group></group>
+        </timer>
+      </group>
+    </group>
+  </group>
+
+  <include file="{a,b}.launch.xml" if="false">
+    <arg name="" value="" />
+    <arg name="" value="" />
+    <let name="" value="" />
+  </include>
+
+  <let name="" value="" />
+
+  <log message="" />
+
+  <reset>
+    <keep name="" value="" />
+    <keep name="" value="" />
+    <keep name="" value="" />
+  </reset>
+
+  <reset_env />
+
+  <set_env name="a" value="" />
+
+  <shutdown reason="" />
+
+  <timer period="0" cancel_on_shutdown="false">
+    <log message="a" />
+    <timer period="0">
+      <timer period="0">
+        <timer period="0">
+          <group></group>
+        </timer>
+      </timer>
+    </timer>
+  </timer>
+
+  <unset_env name="" />
+
+</launch>

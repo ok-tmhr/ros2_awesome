@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:include
+    schemaLocation="https://ok-tmhr.github.io/ros2_awesome/schema/launch.xsd"></xs:include>
+
+  <!-- Types -->
+  <xs:simpleType name="NotEmptyString">
+    <xs:restriction base="xs:token">
+      <xs:minLength value="1"></xs:minLength>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="ParamType">
+    <xs:annotation>
+      <xs:documentation>'name' or 'from' is exclusively required. 'param', 'value' and 'from' are
+        mutually exclusive. </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="param" type="ParamType" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="type">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="str" />
+          <xs:enumeration value="bool" />
+          <xs:enumeration value="float" />
+          <xs:enumeration value="int" />
+          <xs:enumeration value="list_of_str" />
+          <xs:enumeration value="list_of_bool" />
+          <xs:enumeration value="list_of_float" />
+          <xs:enumeration value="list_of_int" />
+          <xs:enumeration value="yaml" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="name" type="xs:string" />
+    <xs:attribute name="value" type="xs:string" />
+    <xs:attribute name="value-sep" type="xs:string" />
+    <xs:attribute name="from" type="xs:string" />
+    <xs:attribute name="allow_substs" type="xs:boolean" />
+  </xs:complexType>
+
+  <xs:simpleType name="NodeNameType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[A-z_][A-z0-9_]*" />
+      <xs:maxLength value="255" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="NamespaceType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="([A-z_][A-z0-9_]*(/[A-z_][A-z0-9_]*)*)?"></xs:pattern>
+      <xs:maxLength value="245"></xs:maxLength>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Action -->
+  <xs:element name="node" type="Node" substitutionGroup="action" />
+  <xs:complexType name="Node">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="remap">
+            <xs:complexType>
+              <xs:attribute name="from" type="NotEmptyString" use="required" />
+              <xs:attribute name="to" type="NotEmptyString" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="param" type="ParamType" />
+          <xs:element name="env" type="NameValueType" />
+        </xs:choice>
+
+        <xs:attribute name="args" type="xs:string" />
+        <xs:attribute name="ros_args" type="NotEmptyString" />
+        <xs:attribute name="node-name" type="xs:string" use="prohibited" />
+        <xs:attribute name="exec_name" type="xs:string" />
+        <xs:attribute name="pkg" type="xs:string" />
+        <xs:attribute name="exec" type="xs:string" use="required" />
+        <!-- * Required in usual case -->
+        <xs:attribute name="namespace" type="NamespaceType" use="required" />
+
+        <!-- * from ExecuteProcess  -->
+        <xs:attribute name="cmd" type="xs:string" use="prohibited" />
+        <xs:attribute name="cwd" type="xs:string" />
+        <!-- * Required in usual case -->
+        <xs:attribute name="name" type="NodeNameType" use="required" />
+        <xs:attribute name="on_exit" type="xs:string" fixed="shutdown" />
+        <xs:attribute name="launch-prefix" type="xs:string" />
+        <xs:attribute name="output" type="OutputType" />
+        <xs:attribute name="respawn" type="BooleanOrString" />
+        <!-- ! Invalid input has broken shutdown. e.g. "1.2", "abc" -->
+        <xs:attribute name="respawn_max_retries" type="xs:integer" />
+        <xs:attribute name="respawn_delay" type="NonNegativeFloat" />
+        <xs:attribute name="sigkill_timeout" type="NonNegativeFloat" />
+        <xs:attribute name="sigterm_timeout" type="NonNegativeFloat" />
+        <xs:attribute name="shell" type="BooleanOrString" />
+        <xs:attribute name="emulate_tty" type="BooleanOrString" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="lifecycle_node" type="LifecycleNode" substitutionGroup="action" />
+  <xs:complexType name="LifecycleNode">
+    <xs:complexContent>
+      <xs:extension base="Node">
+        <xs:attribute name="autostart" type="BooleanOrString" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="load_composable_node" type="LoadComposableNodes" substitutionGroup="action" />
+  <xs:complexType name="LoadComposableNodes">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="composable_node" type="ComposableNode" />
+        </xs:choice>
+        <xs:attribute name="target" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="node_container" type="ComposableNodeContainer" substitutionGroup="action" />
+  <xs:complexType name="ComposableNodeContainer">
+    <xs:complexContent>
+      <xs:extension base="Node">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="composable_node" type="ComposableNode" />
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="push_ros_namespace" type="PushROSNamespace" substitutionGroup="action" />
+  <xs:element name="push-ros-namespace" type="PushROSNamespace" substitutionGroup="action" />
+  <xs:complexType name="PushROSNamespace">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attribute name="namespace" type="NamespaceType" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="ros_timer" type="ROSTimer" substitutionGroup="action" />
+  <xs:complexType name="ROSTimer">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="action" />
+        </xs:choice>
+        <xs:attribute name="period" use="required">
+          <xs:simpleType>
+            <xs:union memberTypes="xs:string NonNegativeFloat" />
+          </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="cancel_on_shutdown" type="BooleanOrString" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="set_parameter" type="SetParameter" substitutionGroup="action" />
+  <xs:complexType name="SetParameter">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attributeGroup ref="NameValueAttribute" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="set_parameters_from_file" type="SetParameterFromFile" substitutionGroup="action" />
+  <xs:complexType name="SetParameterFromFile">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attribute name="filename" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="set_remap" type="SetRemap" substitutionGroup="action" />
+  <xs:complexType name="SetRemap">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attribute name="from" type="xs:string" use="required" />
+        <xs:attribute name="to" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="set_ros_log_dir" type="SetROSLogDir" substitutionGroup="action" />
+  <xs:complexType name="SetROSLogDir">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attribute name="new_log_dir" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="set_use_sim_time" type="SetUseSimTime" substitutionGroup="action" />
+  <xs:complexType name="SetUseSimTime">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attribute name="value" type="BooleanOrString" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- * Description -->
+  <xs:element name="composable_node" type="ComposableNode" />
+  <xs:complexType name="ComposableNode">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="remap">
+        <xs:complexType>
+          <xs:attribute name="from" type="NotEmptyString" use="required" />
+          <xs:attribute name="to" type="NotEmptyString" use="required" />
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="extra_arg" type="NameValueType" />
+    </xs:choice>
+    <xs:attribute name="pkg" type="xs:string" use="required" />
+    <xs:attribute name="plugin" type="xs:string" use="required" />
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="if" type="BooleanOrString" />
+    <xs:attribute name="unless" type="BooleanOrString" />
+  </xs:complexType>
+</xs:schema>

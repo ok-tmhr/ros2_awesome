@@ -1,0 +1,1292 @@
+# yaml-language-server: $schema=https://json-schema.org/draft/2020-12/schema
+$schema: "https://json-schema.org/draft/2020-12/schema"
+$id: "https://ok-tmhr.github.io/ros2_awesome/schema/launch.yaml"
+title: launch
+type: object
+properties:
+  launch:
+    oneOf:
+      - $ref: "#/$defs/children"
+      - type: object
+        properties:
+          deprecated:
+            type: string
+          children:
+            $ref: "#/$defs/children"
+        required:
+          - children
+    description: >-
+      A YAML launch file consists of a root launch entity containing a list of
+      action entities and their parameters. Each action entity corresponds to a
+      ROS 2 launch action that will be executed during the launch process.
+      The YAML structure maps directly to the action hierarchy in the launch
+      system.
+      Available actions are exposed with `@expose_action` annotations, e.g.
+      https://github.com/ros2/launch/blob/jazzy/launch/launch/actions/declare_launch_argument.py#L34.
+      Launch actions can accept Substitution within their some properties.
+      Substitutions use the $(type args) syntax, where type is the substitution
+      type and args are the arguments specific to that type. All available
+      substitutions are exposed by `@expose_substitution` annotations, e.g.
+      https://github.com/ros2/launch/blob/jazzy/launch/launch/substitutions/launch_configuration.py#L33.
+      https://github.com/ros2/launch/tree/jazzy/launch_yaml
+    examples:
+      - launch:
+          deprecated: optional deprecation message
+          children:
+            - action_type1:
+                param1: value1
+                param2: value2
+            - action_type2:
+                param3: value3
+                children:
+                  - nested_action:
+                      param4: value4
+      - launch:
+          - action_type1:
+              param1: value1
+              param2: value2
+          - action_type2:
+              param3: value3
+              children:
+                - nested_action:
+                    param4: value4
+required:
+  - launch
+unevaluatedProperties: false
+$defs:
+  children:
+    type: array
+    items:
+      $ref: "#/$defs/action"
+    description: >-
+      Launch entity is a launch action with only one key and some properties.
+      Entities support exclusive if/else property as a condition in addition to
+      action specific properties.
+  action:
+    type: object
+    unevaluatedProperties: false
+    maxProperties: 1
+    properties:
+      append_env: { $ref: "#/$defs/append_env" }
+      arg: { $ref: "#/$defs/arg" }
+      executable: { $ref: "#/$defs/executable" }
+      group: { $ref: "#/$defs/group" }
+      include: { $ref: "#/$defs/include" }
+      let: { $ref: "#/$defs/let" }
+      log: { $ref: "#/$defs/log" }
+      reset: { $ref: "#/$defs/reset" }
+      reset_env: { $ref: "#/$defs/reset_env" }
+      set_env: { $ref: "#/$defs/set_env" }
+      shutdown: { $ref: "#/$defs/shutdown" }
+      timer: { $ref: "#/$defs/timer" }
+      unset_env: { $ref: "#/$defs/unset_env" }
+      lifecycle_node: { $ref: "#/$defs/lifecycle_node" }
+      load_composable_node: { $ref: "#/$defs/load_composable_node" }
+      node: { $ref: "#/$defs/node" }
+      node_container: { $ref: "#/$defs/node_container" }
+      push_ros_namespace: { $ref: "#/$defs/push_ros_namespace" }
+      push-ros-namespace: { $ref: "#/$defs/push_ros_namespace" }
+      ros_timer: { $ref: "#/$defs/ros_timer" }
+      set_parameter: { $ref: "#/$defs/set_parameter" }
+      set_parameters_from_file: { $ref: "#/$defs/set_parameters_from_file" }
+      set_remap: { $ref: "#/$defs/set_remap" }
+      set_ros_log_dir: { $ref: "#/$defs/set_ros_log_dir" }
+      set_use_sim_time: { $ref: "#/$defs/set_use_sim_time" }
+  actionBase:
+    type: object
+    properties:
+      if:
+        $ref: "#/$defs/booleanString"
+      unless:
+        $ref: "#/$defs/booleanString"
+    not:
+      required:
+        - if
+        - unless
+  booleanString:
+    oneOf:
+      - type: string
+        pattern: "^\\s*[01]\\s*$"
+      - type: string
+        pattern: "^\\s*[Tt][Rr][Uu][Ee]\\s*$"
+      - type: string
+        pattern: "^\\s*[Ff][Aa][Ll][Ss][Ee]\\s*$"
+      - $ref: "#/$defs/substitution"
+  nameValues:
+    type: array
+    minItems: 1
+    items:
+      $id: /name-and-value
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+      required:
+        - name
+        - value
+      unevaluatedProperties: false
+  substitution:
+    type: string
+    pattern: \$\(.+\)
+  append_env:
+    title: append_env
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      name:
+        type: string
+        description: the name of the environment variable
+      value:
+        type: string
+        description: the value to set or append
+      prepend:
+        type: boolean
+        description: whether the value should be prepended instead
+      separator:
+        type: string
+        description: "the separator to use, defaulting to a platform-specific separator"
+    required:
+      - name
+      - value
+    unevaluatedProperties: false
+    description: >-
+      Action that appends to an environment variable if it exists and sets it if
+      it does not.
+      It can optionally prepend instead of appending. It can also optionally use
+      a custom separator, with the default being a platform-specific separator,
+      os.pathsep.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.append_environment_variable.html
+    examples:
+      - launch:
+          - append_env:
+              name: env_variable
+              value: env_var_value
+      - launch:
+          - append_env:
+              name: env_variable
+              value: env_var_value
+              prepend: true
+              separator: ":"
+  arg:
+    title: arg
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      name:
+        type: string
+      default:
+        type: string
+      choice:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          properties:
+            value:
+              type: string
+          required:
+            - value
+      description:
+        type: string
+    required:
+      - name
+    unevaluatedProperties: false
+    examples:
+      - launch:
+          - arg:
+              name: simple_argument
+      - launch:
+          - arg:
+              name: with_default_value
+              default: default
+      - launch:
+          - arg:
+              name: with_default_and_description
+              default: some_default
+              description: this argument is used to configure ...
+      - launch:
+          - arg:
+              name: mode
+              default: A
+              description: Choose between mode A and mode B
+              choice:
+                - A
+                - B
+    description: >-
+      Action that declares a new launch argument.
+      A launch argument is stored in a "launch configuration" of the same name.
+      See `launch.actions.SetLaunchConfiguration` and
+      `launch.substitutions.LaunchConfiguration`.
+      Any launch arguments declared within a `launch.LaunchDescription` will be
+      exposed as arguments when that launch description is included.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.declare_launch_argument.html#module-launch.actions.declare_launch_argument
+  executable:
+    title: executable
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    $anchor: exec
+    properties:
+      cmd:
+        type: string
+        description: >-
+          a list where the first item is the executable and the rest are
+          arguments to the executable, each item may be a string or a list of
+          strings and Substitutions to be resolved at runtime
+      cwd:
+        type: string
+        description: the directory in which to run the executable
+      name:
+        type: string
+        description: >-
+          the label used to represent the process, as a string or a Substitution
+          to be resolved at runtime, defaults to the basename of the executable
+      on_exit:
+        enum:
+          - shutdown
+        description: list of actions to execute upon process exit.
+      launch-prefix:
+        type: string
+        description: >-
+          a set of commands/arguments to precede the cmd, used for things like
+          gdb/valgrind and defaults to the LaunchConfiguration called
+          ‘launch-prefix’. Note that a non-default prefix provided in a launch
+          file will override the prefix provided via the launch-prefix launch
+          configuration regardless of whether the launch-prefix-filter launch
+          configuration is provided.
+      output:
+        oneOf:
+          - enum:
+              - screen
+              - log
+              - both
+              - own_log
+              - full
+          - $ref: "#/$defs/substitution"
+        description: >-
+          configuration for process output logging. Defaults to ‘log’ i.e. log
+          both stdout and stderr to launch main log file and stderr to the
+          screen. Overridden externally by the OVERRIDE_LAUNCH_PROCESS_OUTPUT
+          envvar value. See launch.logging.get_output_loggers() documentation
+          for further reference on all available options.
+      respawn:
+        $ref: "#/$defs/booleanString"
+        description: >-
+          if ‘True’, relaunch the process that abnormally died. Defaults to
+          ‘False’.
+      respawn_max_retries:
+        type:
+          - integer
+          - boolean
+        description: >-
+          number of times to respawn the process if respawn is ‘True’. A
+          negative value will respawn an infinite number of times (default
+          behavior).
+      respawn_delay:
+        type: number
+        minimum: 0
+        description: a delay time to relaunch the died process if respawn is ‘True’.
+        $comment: e-expression is parsed as string
+      sigkill_timeout:
+        type: number
+        minimum: 0
+        description: >-
+          time until escalating to SIGKILL after SIGTERM, as a string or a list
+          of strings and Substitutions to be resolved at runtime, defaults to
+          the LaunchConfiguration called ‘sigkill_timeout’
+        $comment: e-expression is parsed as string
+      sigterm_timeout:
+        type: number
+        minimum: 0
+        description: >-
+          time until shutdown should escalate to SIGTERM, as a string or a list
+          of strings and Substitutions to be resolved at runtime, defaults to
+          the LaunchConfiguration called ‘sigterm_timeout’
+        $comment: e-expression is parsed as string
+      shell:
+        anyOf:
+          - type: boolean
+          - $ref: "#/$defs/booleanString"
+        $comment: YAML booleans are also valid
+        description: "if True, a shell is used to execute the cmd"
+      emulate_tty:
+        anyOf:
+          - type: boolean
+          - $ref: "#/$defs/booleanString"
+        description: >-
+          emulate a tty (terminal), defaults to False, but can be overridden
+          with the LaunchConfiguration called ‘emulate_tty’, the value of which
+          is evaluated as true or false according to
+          evaluate_condition_expression(). Throws
+          InvalidConditionExpressionError if the ‘emulate_tty’ configuration
+          does not represent a boolean.
+      env:
+        $ref: "#/$defs/nameValues"
+        description: >-
+          dictionary of environment variables to be used, starting from a clean
+          environment. If ‘None’, the current environment is used.
+    required:
+      - cmd
+    unevaluatedProperties: false
+    description: >-
+      Construct an ExecuteProcess action.
+      Many arguments are passed eventually to subprocess.Popen, so see the
+      documentation for the class for additional details.
+      This action, once executed, registers several event handlers for various
+      process related events and will also emit events asynchronously when
+      certain events related to the process occur.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.execute_process.html#module-launch.actions.execute_process
+    examples:
+      - launch:
+          - arg:
+              name: file_path
+              description: path of the file to cat
+          - executable:
+              cmd: cat $(var file_path)
+      - launch:
+          - executable:
+              cmd: ls -las
+              name: my_ls_process
+              output: both
+      - launch:
+          - arg:
+              name: open_gui
+              description: "when truthy, the gui will be opened"
+          - executable:
+              cmd: my_cmd --open-gui
+              if: $(var open_gui)
+          - executable:
+              cmd: my_cmd
+              unless: $(var open_gui)
+      - launch:
+          - executable:
+              cmd: my_cmd
+              env:
+                name: env_variable
+                value: env_var_value
+  group:
+    title: group
+    oneOf:
+      - $ref: "#/$defs/children"
+      - type: object
+        allOf:
+          - $ref: "#/$defs/actionBase"
+        properties:
+          children:
+            $ref: "#/$defs/children"
+          scoped:
+            type: boolean
+            $comment: String input is ignored.
+          forwarding:
+            type: boolean
+            $comment: String input is ignored
+          keep:
+            $ref: "#/$defs/nameValues"
+        required:
+          - children
+    unevaluatedProperties: false
+    description: >-
+      Action that yields other actions.
+      This action is used to nest other actions without including a separate
+      launch description, while also optionally having a condition (like all
+      other actions), scoping and forwarding launch configurations and
+      environment variables, and/or declaring launch configurations for just the
+      group and its yielded actions.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.group_action.html#module-launch.actions.group_action
+    examples:
+      - launch:
+          - group:
+              - executable:
+                  cmd: ls
+              - executable:
+                  cmd: ps
+      - launch:
+          - group:
+              scoped: false
+              children:
+                - executable:
+                    cmd: ls
+                - executable:
+                    cmd: ps
+  include:
+    title: include
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      file:
+        type: string
+      arg:
+        $ref: "#/$defs/nameValues"
+      let:
+        $ref: "#/$defs/nameValues"
+    required:
+      - file
+    unevaluatedProperties: false
+    description: >-
+      Action that includes a launch description source and yields its entities
+      when visited.
+      It is possible to pass arguments to the launch description, which it
+      declared with the launch.actions.DeclareLaunchArgument action.
+      If any given arguments do not match the name of any declared launch
+      arguments, then they will still be set as Launch Configurations using the
+      launch.actions.SetLaunchConfiguration action. This is done because it’s
+      not always possible to detect all instances of the declare launch argument
+      class in the given launch description.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.include_launch_description.html
+    examples:
+      - launch:
+          - let:
+              name: arg1
+              value: value1
+          - include:
+              file: $(find-pkg-share my_pkg)/launch/other_launch.py
+              let:
+                - name: other_arg1
+                  value: $(var arg1)
+                - name: other_arg2
+                  value: value2
+  let:
+    title: let
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+    required:
+      - name
+      - value
+    unevaluatedProperties: false
+    description: >-
+      Action that sets a launch configuration by name.
+      Launch configurations can be accessed by the LaunchConfiguration
+      substitution and are accessible after being set, even in included
+      LaunchDescription’s, but can be scoped with groups.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.set_launch_configuration.html
+    examples:
+      - launch:
+          - let:
+              name: var1
+              value: value1
+  log:
+    title: log
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      message:
+        type: string
+    required:
+      - message
+    unevaluatedProperties: false
+    description: >-
+      Action that logs a message when executed.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.log_info.html
+    examples:
+      - launch:
+          - log:
+              message: some log message
+  reset:
+    title: reset
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      keep:
+        $ref: "#/$defs/nameValues"
+    unevaluatedProperties: false
+    description: >-
+      Action that resets launch configurations in the current context.
+      This action can be used to clear the launch configurations from the
+      context it was called in. It optionally can be given a dictionary with
+      launch configurations to be set after clearing. Launch configurations
+      given in the dictionary are evaluated before the context launch
+      configurations are cleared. This allows launch configurations to be passed
+      through the clearing of the context.
+      If launch_configurations is None or an empty dict then all launch
+      configurations will be cleared.
+      If launch_configurations has entries (i.e. {‘foo’: ‘FOO’}) then these will
+      be set after the clearing operation.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.reset_launch_configurations.html
+    examples:
+      - launch:
+          - reset: {}
+      - launch:
+          - reset:
+              keep:
+                - name: var1
+                  value: value1
+                - name: var2
+                  value: value2
+  reset_env:
+    title: reset_env
+    $id: /reset_env
+    $ref: "#/$defs/actionBase"
+    unevaluatedProperties: false
+    description: >-
+      Action that resets the environment in the current context.
+      Clears any changes made by previous actions to the context environment.
+      The environment is reset to the state it was in when the context was
+      created, i.e. the contents of os.environ.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.reset_environment.html
+    examples:
+      - launch:
+          - reset: {}
+  set_env:
+    title: set_env
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      name:
+        type: string
+        description: the name of the environment variable to be set.
+      value:
+        type: string
+        description: the value of the environment variable to be set.
+    required:
+      - name
+      - value
+    unevaluatedProperties: false
+    description: >-
+      Action that sets an environment variable.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.set_environment_variable.html
+    examples:
+      - launch:
+          - set_env:
+              name: env_variable1
+              value: env_var_value1
+  shutdown:
+    title: shutdown
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      reason:
+        type: string
+    unevaluatedProperties: false
+    description: >-
+      Action that shuts down a launched system by emitting Shutdown when
+      executed.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.shutdown_action.html
+    examples:
+      - launch:
+          - shutdown: {}
+      - launch:
+          - shutdown:
+              reason: some reason
+  timer:
+    title: timer
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      period:
+        anyOf:
+          - type: number
+          - type: string
+            pattern: "^\\s*[+-]?(\\d+(\\.\\d*)?|\\.\\d+)\\s*$"
+            deprecated: true
+          - $ref: "#/$defs/substitution"
+        description: the time (in seconds) to set the timer for
+      cancel_on_shutdown:
+        oneOf:
+          - type: boolean
+          - $ref: "#/$defs/substitution"
+        description: whether to cancel the timer on launch shutdown
+      children:
+        $ref: "#/$defs/children"
+        description: an iterable containing actions to be executed on timeout
+    required:
+      - period
+      - children
+    unevaluatedProperties: false
+    description: >-
+      Action that defers other entities until a period of time has passed,
+      unless canceled.
+      All timers are “one-shot”, in that they only fire one time and never
+      again.
+      Entities executed after the given period of time can access the launch
+      configurations that exist at the time that the timer action executed, but
+      changes made by them will not persist. This is similar to grouping the
+      entities in a launch.actions.GroupAction with scoped=True.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.timer_action.html
+    examples:
+      - launch:
+          children:
+            - timer:
+                period: 5
+                children:
+                  - executable:
+                      cmd: delayed_node
+  unset_env:
+    title: unset_env
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      name:
+        type: string
+        description: the name of the environment variable to be unset.
+    required:
+      - name
+    unevaluatedProperties: false
+    description: >-
+      Action that unsets an environment variable if it is set, otherwise does
+      nothing.
+      https://docs.ros.org/en/jazzy/p/launch/launch.actions.unset_environment_variable.html
+    examples:
+      - launch:
+          - unset_env:
+              name: env_variable
+  lifecycle_node:
+    title: lifecycle_node
+    type: object
+    allOf:
+      - $ref: "#/$defs/node"
+    properties:
+      autostart:
+        $ref: "#/$defs/booleanString"
+    description: >-
+      Action that executes a ROS lifecycle node.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.lifecycle_node.html
+  load_composable_node:
+    title: load_composable_node
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      target:
+        type: string
+      composable_node:
+        type: array
+        minItems: 1
+        items:
+          $ref: "#/$defs/composable_node"
+    required:
+      - target
+      - composable_node
+    unevaluatedProperties: false
+    description: >-
+      Action that loads composable ROS nodes into a running container.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.load_composable_nodes.html
+    examples:
+      - launch:
+          - node_container:
+              pkg: rclcpp_components
+              exec: component_container
+              name: image_container
+          - load_composable_node:
+              target: image_container
+              composable_node:
+                - pkg: image_tools
+                  plugin: "image_tools::Cam2Image"
+                  name: cam2image
+                  remap:
+                    - from: /image
+                      to: /burgerimage
+                  param:
+                    - name: width
+                      value: 320
+                    - name: height
+                      value: 240
+                    - name: burger_mode
+                      value: true
+                    - name: history
+                      value: keep_last
+                  extra_arg:
+                    - name: use_intra_process_comms
+                      value: true
+                - pkg: image_tools
+                  plugin: "image_tools::ShowImage"
+                  name: showimage
+                  remap:
+                    - from: /image
+                      to: /burgerimage
+                  param:
+                    - name: history
+                      value: keep_last
+                  extra_arg:
+                    - name: use_intra_process_comms
+                      value: true
+  node:
+    title: node
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    $anchor: node
+    properties:
+      cwd:
+        $ref: "#/$defs/executable/properties/cwd"
+      name:
+        $ref: "#/$defs/executable/properties/name"
+      on_exit:
+        $ref: "#/$defs/executable/properties/on_exit"
+      launch-prefix:
+        $ref: "#/$defs/executable/properties/launch-prefix"
+      output:
+        $ref: "#/$defs/executable/properties/output"
+      respawn:
+        $ref: "#/$defs/executable/properties/respawn"
+      respawn_max_retries:
+        $ref: "#/$defs/executable/properties/respawn_max_retries"
+      respawn_delay:
+        $ref: "#/$defs/executable/properties/respawn_delay"
+      sigkill_timeout:
+        $ref: "#/$defs/executable/properties/sigkill_timeout"
+      sigterm_timeout:
+        $ref: "#/$defs/executable/properties/sigterm_timeout"
+      shell:
+        $ref: "#/$defs/executable/properties/shell"
+      emulate_tty:
+        $ref: "#/$defs/executable/properties/emulate_tty"
+      env:
+        $ref: "#/$defs/executable/properties/env"
+      args:
+        type: string
+      ros_args:
+        type: string
+        minLength: 1
+      node-name:
+        type: string
+        deprecated: true
+      exec_name:
+        type: string
+      pkg:
+        type: string
+      exec:
+        type: string
+      namespace:
+        type: string
+      remap:
+        type: array
+        items:
+          properties:
+            from:
+              type: string
+            to:
+              type: string
+          required:
+            - from
+            - to
+          unevaluatedProperties: false
+      param:
+        $dynamicAnchor: param
+        type: array
+        minItems: 1
+        items:
+          oneOf:
+            - properties:
+                type:
+                  enum:
+                    - str
+                    - bool
+                    - float
+                    - int
+                    - list_of_str
+                    - list_of_bool
+                    - list_of_float
+                    - list_of_int
+                    - yaml
+                  description: "'yaml' does no additional type check."
+                name:
+                  type: string
+                value:
+                  oneOf:
+                    - type:
+                        - string
+                        - boolean
+                        - number
+                    - type: array
+                      items:
+                        type: string
+                    - type: array
+                      items:
+                        type: boolean
+                    - type: array
+                      items:
+                        type: number
+                  minItems: 1
+                  $comment: e-expression is parsed as string
+              required:
+                - name
+              dependentSchemas:
+                type:
+                  oneOf:
+                    - properties:
+                        type:
+                          const: str
+                        value:
+                          type: string
+                    - properties:
+                        type:
+                          const: bool
+                        value:
+                          oneOf:
+                            - type: boolean
+                            - $ref: "#/$defs/substitution"
+                    - properties:
+                        type:
+                          const: float
+                        value:
+                          oneOf:
+                            - type: number
+                            - $ref: "#/$defs/substitution"
+                    - properties:
+                        type:
+                          const: int
+                        value:
+                          oneOf:
+                            - type: integer
+                            - $ref: "#/$defs/substitution"
+                    - properties:
+                        type:
+                          const: list_of_str
+                        value:
+                          type: array
+                          items:
+                            type: string
+                    - properties:
+                        type:
+                          const: list_of_bool
+                        value:
+                          type: array
+                          items:
+                            oneOf:
+                              - type: boolean
+                              - $ref: "#/$defs/substitution"
+                    - properties:
+                        type:
+                          const: list_of_float
+                        value:
+                          type: array
+                          items:
+                            oneOf:
+                              - type: number
+                              - $ref: "#/$defs/substitution"
+                    - properties:
+                        type:
+                          const: list_of_int
+                        value:
+                          type: array
+                          items:
+                            oneOf:
+                              - type: integer
+                              - $ref: "#/$defs/substitution"
+                    - properties:
+                        type:
+                          const: yaml
+                  required:
+                    - value
+              unevaluatedProperties: false
+            - properties:
+                name:
+                  type: string
+                param:
+                  $dynamicRef: "#param"
+              required:
+                - name
+              unevaluatedProperties: false
+            - properties:
+                from:
+                  type: string
+                allow_substs:
+                  type: boolean
+              required:
+                - from
+              unevaluatedProperties: false
+    required:
+      - exec
+    description: >-
+      Action that executes a ROS node.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.node.html
+    examples:
+      - launch:
+          - node:
+              pkg: turtlesim
+              exec: turtlesim_node
+              name: sim
+              namespace: turtlesim1
+              args: "--ros-args --log-level info"
+      - launch:
+          - node:
+              pkg: turtlesim
+              exec: turtlesim_node
+              name: sim
+              namespace: turtlesim2
+              ros_args: "--log-level warn"
+              param:
+                - name: background_r
+                  value: "0"
+                - name: background_g
+                  value: "255"
+                - name: background_b
+                  value: "0"
+      - launch:
+          - node:
+              pkg: turtlesim
+              exec: mimic
+              name: mimic
+              remap:
+                - from: /input/pose
+                  to: /turtlesim1/turtle1/pose
+                - from: /output/cmd_vel
+                  to: /turtlesim2/turtle1/cmd_vel
+  node_container:
+    title: node_container
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      composable_node:
+        type: array
+        items:
+          $ref: "#/$defs/composable_node"
+        description: >-
+          Describes a ROS node that can be loaded into a container with other
+          nodes.
+          https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.descriptions.composable_node.html
+      cwd:
+        $ref: "#/$defs/node/properties/cwd"
+      name:
+        $ref: "#/$defs/node/properties/name"
+      on_exit:
+        $ref: "#/$defs/node/properties/on_exit"
+      launch-prefix:
+        $ref: "#/$defs/node/properties/launch-prefix"
+      output:
+        $ref: "#/$defs/node/properties/output"
+      respawn:
+        $ref: "#/$defs/node/properties/respawn"
+      respawn_max_retries:
+        $ref: "#/$defs/node/properties/respawn_max_retries"
+      respawn_delay:
+        $ref: "#/$defs/node/properties/respawn_delay"
+      sigkill_timeout:
+        $ref: "#/$defs/node/properties/sigkill_timeout"
+      sigterm_timeout:
+        $ref: "#/$defs/node/properties/sigterm_timeout"
+      shell:
+        $ref: "#/$defs/node/properties/shell"
+      emulate_tty:
+        $ref: "#/$defs/node/properties/emulate_tty"
+      env:
+        $ref: "#/$defs/node/properties/env"
+      args:
+        $ref: "#/$defs/node/properties/args"
+      ros_args:
+        $ref: "#/$defs/node/properties/ros_args"
+      node-name:
+        $ref: "#/$defs/node/properties/node-name"
+      exec_name:
+        $ref: "#/$defs/node/properties/exec_name"
+      pkg:
+        $ref: "#/$defs/node/properties/pkg"
+      exec:
+        $ref: "#/$defs/node/properties/exec"
+      namespace:
+        $ref: "#/$defs/node/properties/namespace"
+      remap:
+        $ref: "#/$defs/node/properties/remap"
+      param:
+        $ref: "#/$defs/node/properties/param"
+    required:
+      - name
+      - namespace
+      - exec
+    unevaluatedProperties: false
+    description: >-
+      Action that executes a container ROS node for composable ROS nodes.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.composable_node_container.html
+    examples:
+      - launch:
+          - node_container:
+              pkg: rclcpp_components
+              exec: component_container
+              name: image_container
+              composable_node:
+                - pkg: image_tools
+                  plugin: "image_tools::Cam2Image"
+                  name: cam2image
+                  remap:
+                    - from: /image
+                      to: /burger_image
+                  param:
+                    - name: width
+                      value: 320
+                    - name: height
+                      value: 240
+                    - name: burger_mode
+                      value: true
+                    - name: history
+                      value: keep_last
+                  extra_arg:
+                    - name: use_intra_process_comms
+                      value: true
+                - pkg: image_tools
+                  plugin: "image_tools::ShowImage"
+                  name: show_image
+                  remap:
+                    - from: /image
+                      to: /burger_image
+                  param:
+                    - name: history
+                      value: keep_last
+                  extra_arg:
+                    - name: use_intra_process_comms
+                      value: true
+  push_ros_namespace:
+    title: push_ros_namespace
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      namespace:
+        type: string
+    required:
+      - namespace
+    unevaluatedProperties: false
+    description: >-
+      Action that pushes the ros namespace.
+      It’s automatically popped when used inside a scoped GroupAction. There’s
+      no other way of popping it.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.push_ros_namespace.html
+    examples:
+      - launch:
+          - push_ros_namespace:
+              namespace: ns_value
+  ros_timer:
+    title: ros_timer
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      period:
+        oneOf:
+          - type: number
+            minimum: 0
+          - $ref: "#/$defs/substitution"
+      children:
+        type:
+          - array
+          - object
+        items:
+          $ref: "#/$defs/action"
+        maxProperties: 0
+      cancel_on_shutdown:
+        oneOf:
+          - type: boolean
+          - $ref: "#/$defs/substitution"
+    required:
+      - period
+      - children
+    unevaluatedProperties: false
+    description: >-
+      Action that defers other entities until a period of time has passed,
+      unless canceled.
+      This timer uses ROS time instead of wall clock time. To enable the use of
+      sim time, you must also use the SetUseSimTime action. All timers are
+      “one-shot”, in that they only fire one time and never again.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.ros_timer.html
+    examples:
+      - launch:
+          ros_timer:
+            period: 1
+            children:
+              - executable:
+                  cmd: echo 'command triggered'
+            cancel_on_shutdown: true
+  set_parameter:
+    title: set_parameter
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      name:
+        type: string
+      value:
+        type: string
+    required:
+      - name
+      - value
+    unevaluatedProperties: false
+    description: >-
+      Action that sets a parameter in the current context.
+      This parameter will be set in all the nodes launched in the same scope.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_parameter.html
+    examples:
+      - launch:
+          - set_parameter:
+              name: my_param
+              value: "2"
+  set_parameters_from_file:
+    title: set_parameters_from_file
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      filename:
+        type: string
+    required:
+      - filename
+    unevaluatedProperties: false
+    description: >-
+      Action that sets parameters for all nodes in scope based on a given yaml
+      file.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_parameters_from_file.html
+    examples:
+      - launch:
+          - set_parameters_from_file:
+              filename: path/to/file.yaml
+  set_remap:
+    title: set_remap
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      from:
+        type: string
+      to:
+        type: string
+    required:
+      - from
+      - to
+    unevaluatedProperties: false
+    description: >-
+      Action that sets a remapping rule in the current context.
+      This remapping rule will be passed to all the nodes launched in the same
+      scope, overriding the ones specified in the Node action constructor.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_remap.html
+    examples:
+      - launch:
+          - set_remap:
+              from: asd
+              to: bsd
+  set_ros_log_dir:
+    title: set_ros_log_dir
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      new_log_dir:
+        type: string
+    required:
+      - new_log_dir
+    unevaluatedProperties: false
+    description: >-
+      Action that sets the ros log directory.
+      This is done by setting the ROS_LOG_DIR environment variable, which will
+      influence all processes started after that time, in which ros was
+      initialized.
+      This can be used in combination with launch.actions.GroupAction and its
+      scoped=true option to provide scoped changes to this environment variable.
+      Note this will not affect nodes loaded into component containers which
+      were started before this action is executed.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_ros_log_dir.html
+    examples:
+      - launch:
+          - set_ros_log_dir:
+              new_log_dir: path/to/new_log_dir
+  set_use_sim_time:
+    title: set_use_sim_time
+    type: object
+    allOf:
+      - $ref: "#/$defs/actionBase"
+    properties:
+      value:
+        oneOf:
+          - type: boolean
+          - $ref: "#/$defs/substitution"
+    required:
+      - value
+    unevaluatedProperties: false
+    description: >-
+      Action that sets the ‘use_sim_time’ parameter in the current context.
+      https://docs.ros.org/en/jazzy/p/launch_ros/launch_ros.actions.set_use_sim_time.html
+    examples:
+      - launch:
+          set_use_sim_time:
+            value: true
+  composable_node:
+    title: composable_node
+    type: object
+    properties:
+      pkg:
+        type: string
+        description: node package name as a sequence of substitutions to be performed.
+      plugin:
+        type: string
+        description: node plugin name as a sequence of substitutions to be performed.
+      name:
+        type: string
+        description: node name as a sequence of substitutions to be performed.
+      if:
+        $ref: "#/$defs/booleanString"
+      unless:
+        $ref: "#/$defs/booleanString"
+      namespace:
+        type: string
+        description: node namespace as a sequence of substitutions to be performed.
+      param:
+        $ref: "#param"
+        description: node parameter YAML files or dicts with substitutions to be performed.
+      remap:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          properties:
+            from:
+              type: string
+              minLength: 1
+            to:
+              type: string
+              minLength: 1
+          required:
+            - from
+            - to
+          unevaluatedProperties: false
+        description: >-
+          node remapping rules as (from, to) tuples with substitutions to be
+          performed.
+      extra_arg:
+        type: array
+        minItems: 1
+        items:
+          type: object
+          properties:
+            name:
+              type: string
+            value:
+              type: string
+          required:
+            - name
+            - value
+          unevaluatedProperties: false
+        description: >-
+          container extra arguments YAML files or dicts with substitutions to be
+          performed.
+    required:
+      - pkg
+      - plugin
+      - name
+    not:
+      required:
+        - if
+        - unless
+    unevaluatedProperties: false
+description: >-
+  launch is designed to provide core features like describing actions (e.g.
+  executing a process or including another launch description), generating
+  events, introspecting launch descriptions, and executing launch descriptions.
+  At the same time, it provides extension points so that the set of things that
+  these core features can operate on, or integrate with, can be expanded with
+  additional packages.
+  https://github.com/ros2/launch/blob/rolling/launch/doc/source/architecture.rst

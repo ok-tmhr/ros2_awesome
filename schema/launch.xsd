@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="launch">
+    <xs:complexType>
+      <xs:choice maxOccurs="unbounded" minOccurs="0">
+        <xs:element ref="action" />
+      </xs:choice>
+      <xs:attribute name="deprecated" type="xs:string" />
+    </xs:complexType>
+  </xs:element>
+
+  <!-- * Attributes -->
+  <xs:attributeGroup name="NameValueAttribute">
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="value" type="xs:string" use="required" />
+  </xs:attributeGroup>
+
+  <xs:attributeGroup name="EnvAttribute">
+    <xs:attribute name="name" use="required">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:minLength value="1"></xs:minLength>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="value" type="xs:string" use="required" />
+  </xs:attributeGroup>
+
+  <!-- * Types -->
+  <xs:complexType name="NameValueType">
+    <xs:attributeGroup ref="NameValueAttribute" />
+  </xs:complexType>
+
+  <xs:complexType name="EnvType">
+    <xs:attributeGroup ref="EnvAttribute" />
+  </xs:complexType>
+
+  <xs:simpleType name="NonNegativeFloat">
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"></xs:minInclusive>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="BooleanOrString">
+    <xs:union memberTypes="xs:boolean xs:string" />
+  </xs:simpleType>
+
+  <xs:simpleType name="OutputType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="screen" />
+      <xs:enumeration value="log" />
+      <xs:enumeration value="both" />
+      <xs:enumeration value="own_log" />
+      <xs:enumeration value="full" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- * Actions -->
+  <xs:element name="action" type="Action" abstract="true" />
+  <xs:complexType name="Action" abstract="true">
+    <xs:attribute name="if" type="BooleanOrString" />
+    <xs:attribute name="unless" type="BooleanOrString" />
+  </xs:complexType>
+
+  <xs:element name="arg" type="DeclareLaunchArgument" substitutionGroup="action" />
+  <xs:complexType name="DeclareLaunchArgument">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:sequence>
+          <xs:element name="choice" minOccurs="0" maxOccurs="unbounded">
+            <xs:complexType>
+              <xs:attribute name="value" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="default" type="xs:string" />
+        <xs:attribute name="description" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="append_env" type="AppendEnvironmentVariable" substitutionGroup="action" />
+  <xs:complexType name="AppendEnvironmentVariable">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attributeGroup ref="EnvAttribute" />
+        <xs:attribute name="prepend" type="BooleanOrString" />
+        <xs:attribute name="separator" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="executable" type="ExecuteProcess" substitutionGroup="action" />
+  <xs:complexType name="ExecuteProcess">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:sequence>
+          <xs:element name="env" type="NameValueType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="cmd" type="xs:string" use="required" />
+        <xs:attribute name="cwd" type="xs:string" />
+        <xs:attribute name="name" type="xs:string" />
+        <xs:attribute name="on_exit" type="xs:string" fixed="shutdown" />
+        <xs:attribute name="launch-prefix" type="xs:string" />
+        <xs:attribute name="output" type="OutputType" />
+        <xs:attribute name="respawn" type="BooleanOrString" />
+        <!-- ! Invalid input has broken shutdown. e.g. "1.2", "abc" -->
+        <xs:attribute name="respawn_max_retries" type="xs:integer" />
+        <xs:attribute name="respawn_delay" type="NonNegativeFloat" />
+        <xs:attribute name="sigkill_timeout" type="NonNegativeFloat" />
+        <xs:attribute name="sigterm_timeout" type="NonNegativeFloat" />
+        <xs:attribute name="shell" type="BooleanOrString" />
+        <xs:attribute name="emulate_tty" type="BooleanOrString" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="group" type="GroupAction" substitutionGroup="action" />
+  <xs:complexType name="GroupAction">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element ref="action" />
+          <xs:element name="keep" type="NameValueType" />
+        </xs:choice>
+        <!-- ! Invalid string is accepted as bool(input). e.g. "aaa" returns True -->
+        <xs:attribute name="scoped" type="BooleanOrString" />
+        <!-- ! Invalid string is accepted as bool(input). e.g. "aaa" returns True -->
+        <xs:attribute name="forwarding" type="BooleanOrString" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="include" type="IncludeLaunchDescription" substitutionGroup="action" />
+  <xs:complexType name="IncludeLaunchDescription">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="arg" type="NameValueType" />
+          <xs:element name="let" type="NameValueType" />
+        </xs:choice>
+        <xs:attribute name="file" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="let" type="SetLaunchConfiguration" substitutionGroup="action" />
+  <xs:complexType name="SetLaunchConfiguration">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attributeGroup ref="NameValueAttribute" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="log" type="LogInfo" substitutionGroup="action" />
+  <xs:complexType name="LogInfo">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attribute name="message" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="reset" type="ResetLaunchConfigurations" substitutionGroup="action" />
+  <xs:complexType name="ResetLaunchConfigurations">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:sequence>
+          <xs:element name="keep" type="NameValueType" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="reset_env" type="ResetEnvironment" substitutionGroup="action" />
+  <xs:complexType name="ResetEnvironment">
+    <xs:complexContent>
+      <xs:extension base="Action" />
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="set_env" type="SetEnvironmentVariable" substitutionGroup="action" />
+  <xs:complexType name="SetEnvironmentVariable">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attributeGroup ref="EnvAttribute" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="shutdown" type="Shutdown" substitutionGroup="action" />
+  <xs:complexType name="Shutdown">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attribute name="reason" type="xs:string" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="timer" type="TimerAction" substitutionGroup="action" />
+  <xs:complexType name="TimerAction">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:sequence>
+          <xs:element ref="action" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="period" type="xs:string" use="required" />
+        <xs:attribute name="cancel_on_shutdown" type="BooleanOrString" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="unset_env" type="UnsetEnvironmentVariable" substitutionGroup="action" />
+  <xs:complexType name="UnsetEnvironmentVariable">
+    <xs:complexContent>
+      <xs:extension base="Action">
+        <xs:attribute name="name" type="xs:string" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+</xs:schema>

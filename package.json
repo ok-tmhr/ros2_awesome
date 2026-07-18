@@ -1,0 +1,25 @@
+{
+  "name": "ros2-frontend-experience",
+  "displayName": "ROS 2 Frontend Experience",
+  "description": "Snippets and Schema for ROS 2 launch frontend",
+  "version": "0.0.1",
+  "publisher": "Tomohiro Oku",
+  "engines": {
+    "vscode": "^1.117.0"
+  },
+  "categories": [
+    "Snippets"
+  ],
+  "contributes": {
+    "snippets": [
+      {
+        "language": "yaml",
+        "path": "snippets/launch_substitutions.json"
+      },
+      {
+        "language": "xml",
+        "path": "snippets/launch_substitutions.json"
+      }
+    ]
+  }
+}
